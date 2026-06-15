@@ -35,6 +35,9 @@ import { resistors } from './resistors';
 import { magneticForce } from './magneticForce';
 import { hydraulicPress } from './hydraulicPress';
 import { orbit } from './orbit';
+import { rcCircuit } from './rcCircuit';
+import { friction } from './friction';
+import { heatingCurve } from './heatingCurve';
 import { unitCircle } from './unitCircle';
 import { quadratic } from './quadratic';
 import { vectorAddition } from './vectorAddition';
@@ -66,6 +69,9 @@ export const models: ModelDefinition[] = [
   magneticForce,
   hydraulicPress,
   orbit,
+  rcCircuit,
+  friction,
+  heatingCurve,
   idealGas,
   population,
   predatorPrey,

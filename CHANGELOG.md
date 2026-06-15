@@ -6,6 +6,22 @@ date.
 
 ---
 
+## 2026-06-15 — More physics models (RC circuit, friction, heating curve)
+
+**Prompt:** "Add more physics models"
+
+**Changes:**
+- `src/models/rcCircuit.ts` — RC circuit charging/discharging (time constant
+  τ = RC, exponential V_c curve, animated capacitor).
+- `src/models/friction.ts` — Friction on a flat surface (static vs kinetic; the
+  block breaks free once the push exceeds μs·N).
+- `src/models/heatingCurve.ts` — Heating curve of water (temperature vs heat with
+  melting/boiling plateaus and latent heat).
+- Registered all three with Japanese title/description and Learn content (now 44
+  models total).
+
+---
+
 ## 2026-06-15 — More physics models (magnetism, hydraulics, orbits)
 
 **Prompt:** "Add more physics models"
