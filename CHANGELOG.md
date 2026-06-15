@@ -6,6 +6,22 @@ date.
 
 ---
 
+## 2026-06-15 — More physics models (magnetism, hydraulics, orbits)
+
+**Prompt:** "Add more physics models"
+
+**Changes:**
+- `src/models/magneticForce.ts` — Magnetic force on a moving charge (F = qvB,
+  circular motion, r = mv/qB; animated with field, velocity & force vectors).
+- `src/models/hydraulicPress.ts` — Hydraulic press / Pascal's principle (force
+  multiplication by piston-area ratio).
+- `src/models/orbit.ts` — Gravitation & circular orbits (v = √(GM/r), Kepler's
+  third law; animated planet around a star).
+- Registered all three with Japanese title/description and Learn content (now 41
+  models total).
+
+---
+
 ## 2026-06-15 — GitHub Pages deployment workflow
 
 **Prompt:** "Add yaml file to publish into Github Pages. Then git add and push to

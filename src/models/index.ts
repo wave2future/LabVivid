@@ -32,6 +32,9 @@ import { doppler } from './doppler';
 import { lever } from './lever';
 import { energyConservation } from './energyConservation';
 import { resistors } from './resistors';
+import { magneticForce } from './magneticForce';
+import { hydraulicPress } from './hydraulicPress';
+import { orbit } from './orbit';
 import { unitCircle } from './unitCircle';
 import { quadratic } from './quadratic';
 import { vectorAddition } from './vectorAddition';
@@ -60,6 +63,9 @@ export const models: ModelDefinition[] = [
   lever,
   energyConservation,
   resistors,
+  magneticForce,
+  hydraulicPress,
+  orbit,
   idealGas,
   population,
   predatorPrey,
