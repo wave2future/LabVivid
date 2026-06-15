@@ -6,6 +6,36 @@ date.
 
 ---
 
+## 2026-06-15 — GitHub Pages deployment workflow
+
+**Prompt:** "Add yaml file to publish into Github Pages. Then git add and push to
+github" / "Give me the deployed GitHub Pages link for preview"
+
+**Changes:**
+- Added `.github/workflows/deploy.yml` — a GitHub Actions workflow that builds the
+  Vite app and deploys `dist/` to GitHub Pages on every push to `main` (and via
+  manual dispatch). Uses `configure-pages` with `enablement: true` so Pages turns
+  on automatically. The app already uses relative `base` and hash routing, so it
+  works under the project subpath.
+- Preview URL: https://wave2future.github.io/LabVivid/
+
+---
+
+## 2026-06-15 — More math & physics models (linear, normal, energy, resistors)
+
+**Prompt:** "Add more math and physics models"
+
+**Changes:**
+- Math: `src/models/linearFunction.ts` (y = mx + b — slope, intercepts) and
+  `src/models/normalDistribution.ts` (Gaussian bell curve, z-score, ±1σ).
+- Physics: `src/models/energyConservation.ts` (KE ⇄ PE in a frictionless bowl,
+  energy bars) and `src/models/resistors.ts` (series vs parallel total
+  resistance and current).
+- Registered all four with Japanese title/description and Learn content (now 38
+  models total).
+
+---
+
 ## 2026-06-15 — More chemistry models (equilibrium, Beer–Lambert, decay)
 
 **Prompt:** "Add more chemistry models"

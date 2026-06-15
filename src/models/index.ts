@@ -30,10 +30,14 @@ import { freeFall } from './freeFall';
 import { buoyancy } from './buoyancy';
 import { doppler } from './doppler';
 import { lever } from './lever';
+import { energyConservation } from './energyConservation';
+import { resistors } from './resistors';
 import { unitCircle } from './unitCircle';
 import { quadratic } from './quadratic';
 import { vectorAddition } from './vectorAddition';
 import { exponential } from './exponential';
+import { linearFunction } from './linearFunction';
+import { normalDistribution } from './normalDistribution';
 
 export const models: ModelDefinition[] = [
   projectileMotion,
@@ -54,6 +58,8 @@ export const models: ModelDefinition[] = [
   buoyancy,
   doppler,
   lever,
+  energyConservation,
+  resistors,
   idealGas,
   population,
   predatorPrey,
@@ -65,6 +71,8 @@ export const models: ModelDefinition[] = [
   quadratic,
   vectorAddition,
   exponential,
+  linearFunction,
+  normalDistribution,
   phScale,
   reactionRate,
   equilibrium,
