@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive 3D Wormhole</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            pointer-events: none;
+            text-shadow: 1px 1px 2px black;
+        }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        <h1 id="ttl">Wormhole Explorer</h1>
+        <p id="sub">Click and drag to rotate • Scroll to zoom</p>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        const LANG=new URLSearchParams(location.search).get('lang')||'en';
+        const I18N={en:{title:'Wormhole Explorer',sub:'Click and drag to rotate • Scroll to zoom'},zh:{title:'虫洞探索器',sub:'拖动旋转 • 滚轮缩放'},ja:{title:'ワームホール・エクスプローラー',sub:'ドラッグで回転 • スクロールで拡大縮小'}};
+        const L=I18N[LANG]||I18N.en;
+        document.getElementById('ttl').innerText=L.title;
+        document.getElementById('sub').innerText=L.sub;
+
+        // --- Scene Setup ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.Camera(); // We'll replace this with a PerspectiveCamera
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const pCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        pCamera.position.z = 5;
+
+        const controls = new OrbitControls(pCamera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // --- Wormhole Geometry ---
+        // Creating a path for the tube
+        class CustomSinCurve extends THREE.Curve {
+            constructor(scale = 1) {
+                super();
+                this.scale = scale;
+            }
+            getPoint(t, optionalTarget = new THREE.Vector3()) {
+                const tx = t * 3 - 1.5;
+                const ty = Math.sin(2 * Math.PI * t) * 0.5;
+                const tz = 0;
+                return optionalTarget.set(tx, ty, tz).multiplyScalar(this.scale);
+            }
+        }
+
+        const path = new CustomSinCurve(10);
+        const geometry = new THREE.TubeGeometry(path, 100, 2, 20, false);
+
+        // --- "Starfield" Material ---
+        // We use a CanvasTexture to generate stars procedurally
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, 512, 512);
+        for (let i = 0; i < 1000; i++) {
+            ctx.fillStyle = `white`;
+            ctx.fillRect(Math.random() * 512, Math.random() * 512, 1, 1);
+        }
+        
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(4, 1);
+
+        const material = new THREE.MeshBasicMaterial({
+            map: texture,
+            side: THREE.BackSide, // Visible from the inside
+            wireframe: false
+        });
+
+        const wormhole = new THREE.Mesh(geometry, material);
+        scene.add(wormhole);
+
+        // --- Animation Loop ---
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Move the texture to simulate travel
+            texture.offset.x += 0.005; 
+            
+            controls.update();
+            renderer.render(scene, pCamera);
+        }
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            pCamera.aspect = window.innerWidth / window.innerHeight;
+            pCamera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>

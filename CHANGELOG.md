@@ -6,6 +6,25 @@ date.
 
 ---
 
+## 2026-06-15 — Add Lorenz Attractor & Wormhole (physics), multilingual
+
+**Prompts:** "physics\\lorenz.html Add lorenz attractor model with multilingual" /
+"physics\\wormhole.html Add worm hole model with multilingual"
+
+**Changes:**
+- Added **Lorenz Attractor** (chaos / dynamical systems) and **Wormhole**
+  (general relativity) under Physics, embedding the self-contained WebGL pages as
+  `public/lorenz.html` and `public/wormhole.html`.
+- Both embeds are localized via `?lang=` (EN/中文/日本語); their Chinese/English
+  overlays now follow the app language. Lorenz's original Chinese overlay was
+  translated.
+- New models `src/models/lorenz.ts` (with a 2D attractor-projection thumbnail)
+  and `src/models/wormhole.ts` (embedding-funnel thumbnail), both with EN/中文/
+  日本語 metadata, data, and Learn content.
+- `ModelPage` now treats every custom-view model as full-bleed. 50 models total.
+
+---
+
 ## 2026-06-15 — Add Mandelbrot Set (math) with multilingual embed
 
 **Prompt:** "E:\\GoingGlobal\\Code\\19-LabVivid\\physics\\MandelbrotSet.html Add

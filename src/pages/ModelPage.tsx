@@ -114,8 +114,8 @@ function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean 
   }, []);
 
   const Custom = custom3D[model.meta.id];
-  // Embedded full-page views (e.g. the periodic table) get a full-width layout.
-  const fullBleed = ['periodic-table', 'black-hole', 'mandelbrot-set'].includes(model.meta.id);
+  // Custom views (interactive 3D / embedded pages) get a full-width layout.
+  const fullBleed = !!Custom;
   const stage = (
     <div ref={stageWrapRef} className={classroom ? 'classroom' : ''}>
       <div className="panel" style={{ overflow: 'hidden' }}>

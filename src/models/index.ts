@@ -41,6 +41,8 @@ import { friction } from './friction';
 import { heatingCurve } from './heatingCurve';
 import { solarSystem } from './solarSystem';
 import { blackHole } from './blackHole';
+import { lorenz } from './lorenz';
+import { wormhole } from './wormhole';
 import { unitCircle } from './unitCircle';
 import { quadratic } from './quadratic';
 import { vectorAddition } from './vectorAddition';
@@ -78,6 +80,8 @@ export const models: ModelDefinition[] = [
   heatingCurve,
   solarSystem,
   blackHole,
+  lorenz,
+  wormhole,
   idealGas,
   population,
   predatorPrey,

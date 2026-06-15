@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lorenz Attractor</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #ff3366;
+            pointer-events: none;
+            text-shadow: 1px 1px 2px black;
+        }
+        .stats { color: #888; font-size: 14px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        <h1 id="ttl">Lorenz Attractor</h1>
+        <p id="sub">Chaos theory: sensitive dependence on initial conditions</p>
+        <div class="stats">σ = 10, ρ = 28, β = 8/3</div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        const LANG=new URLSearchParams(location.search).get('lang')||'en';
+        const I18N={en:{title:'Lorenz Attractor',sub:'Chaos theory: sensitive dependence on initial conditions'},zh:{title:'洛伦兹吸引子',sub:'混沌理论：对初始条件的敏感依赖'},ja:{title:'ローレンツ・アトラクター',sub:'カオス理論：初期条件への鋭敏な依存'}};
+        const L=I18N[LANG]||I18N.en;
+        document.getElementById('ttl').innerText=L.title;
+        document.getElementById('sub').innerText=L.sub;
+
+        // --- 1. 基础场景设置 ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        camera.position.set(30, 30, 60);
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // --- 2. 洛伦兹方程参数 ---
+        let x = 0.1, y = 0, z = 0;
+        const sigma = 10;
+        const rho = 28;
+        const beta = 8/3;
+        const dt = 0.01; // 时间步长
+
+        const MAX_POINTS = 30000;
+        const points = [];
+        const colors = [];
+
+        // --- 3. 几何体初始化 ---
+        const geometry = new THREE.BufferGeometry();
+        // 预分配内存
+        const positions = new Float32Array(MAX_POINTS * 3);
+        const colorArray = new Float32Array(MAX_POINTS * 3);
+        
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+
+        const material = new THREE.LineBasicMaterial({ 
+            vertexColors: true, 
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const line = new THREE.Line(geometry, material);
+        scene.add(line);
+
+        let currentPointIndex = 0;
+
+        // --- 4. 实时计算循环 ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // 每帧计算多个点，让动画更流畅
+            for(let i = 0; i < 5; i++) {
+                if (currentPointIndex < MAX_POINTS) {
+                    // 洛伦兹微分方程
+                    let dx = sigma * (y - x) * dt;
+                    let dy = (x * (rho - z) - y) * dt;
+                    let dz = (x * y - beta * z) * dt;
+
+                    x += dx;
+                    y += dy;
+                    z += dz;
+
+                    // 更新位置属性
+                    const posIdx = currentPointIndex * 3;
+                    positions[posIdx] = x;
+                    positions[posIdx + 1] = y;
+                    positions[posIdx + 2] = z;
+
+                    // 根据 Z 轴高度设置颜色渐变（青色到紫色）
+                    const color = new THREE.Color();
+                    color.setHSL(0.5 + (z / 50) * 0.5, 0.8, 0.5);
+                    colorArray[posIdx] = color.r;
+                    colorArray[posIdx + 1] = color.g;
+                    colorArray[posIdx + 2] = color.b;
+
+                    currentPointIndex++;
+                    
+                    // 告知 Three.js 需要更新缓冲区
+                    geometry.attributes.position.needsUpdate = true;
+                    geometry.attributes.color.needsUpdate = true;
+                    geometry.setDrawRange(0, currentPointIndex);
+                }
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // 窗口缩放自适应
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>

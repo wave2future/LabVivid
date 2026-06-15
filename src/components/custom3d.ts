@@ -14,4 +14,6 @@ export const custom3D: Record<string, Custom3DView> = {
   'black-hole': embedView('blackhole.html', 'Black Hole'),
   'periodic-table': embedView('periodic-table.html', 'Periodic Table'),
   'mandelbrot-set': embedView('mandelbrot.html', 'Mandelbrot Set', true),
+  'lorenz-attractor': embedView('lorenz.html', 'Lorenz Attractor', true),
+  'wormhole': embedView('wormhole.html', 'Wormhole', true),
 };
