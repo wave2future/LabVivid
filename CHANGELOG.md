@@ -6,6 +6,18 @@ date.
 
 ---
 
+## 2026-06-15 — Fix classroom-mode height for embedded/3D stages
+
+**Prompt:** "periodic table classroom mode display area height too small."
+
+**Changes:**
+- In classroom (full-screen) mode the panel now flexes to fill the height and the
+  embedded iframe (and 3D mounts) stretch to 100%, so the periodic table — and
+  the 3D models — use the full screen instead of a short box. Previously only the
+  2D `.stage` had a flex rule.
+
+---
+
 ## 2026-06-15 — Full-width layout for the Periodic Table
 
 **Prompt:** "Too small of the model display area for periodic table. Can you just
