@@ -23,6 +23,10 @@ import { enzymeKinetics } from './enzymeKinetics';
 import { circularMotion } from './circularMotion';
 import { standingWave } from './standingWave';
 import { coulomb } from './coulomb';
+import { freeFall } from './freeFall';
+import { buoyancy } from './buoyancy';
+import { unitCircle } from './unitCircle';
+import { quadratic } from './quadratic';
 
 export const models: ModelDefinition[] = [
   projectileMotion,
@@ -39,6 +43,8 @@ export const models: ModelDefinition[] = [
   circularMotion,
   standingWave,
   coulomb,
+  freeFall,
+  buoyancy,
   idealGas,
   population,
   predatorPrey,
@@ -46,6 +52,8 @@ export const models: ModelDefinition[] = [
   enzymeKinetics,
   derivative,
   fractions,
+  unitCircle,
+  quadratic,
   phScale,
   reactionRate,
 ];

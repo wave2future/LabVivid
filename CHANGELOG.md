@@ -6,6 +6,22 @@ date.
 
 ---
 
+## 2026-06-15 — More math & physics models
+
+**Prompt:** "Add more math and physics models"
+
+**Changes:**
+- Math: `src/models/unitCircle.ts` (Unit Circle & Trigonometry — sin/cos/tan,
+  projections, sine/cosine chart) and `src/models/quadratic.ts` (Quadratic
+  Function — parabola, vertex, roots, discriminant).
+- Physics: `src/models/freeFall.ts` (Free Fall with air resistance → terminal
+  velocity, v–t chart) and `src/models/buoyancy.ts` (Archimedes' principle —
+  float/sink, fraction submerged, buoyant force).
+- Registered all four with Japanese title/description and Learn content (now 27
+  models total).
+
+---
+
 ## 2026-06-15 — More physics models (circular motion, standing waves, Coulomb)
 
 **Prompt:** "Add more Physics models"
