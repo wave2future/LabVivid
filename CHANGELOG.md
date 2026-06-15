@@ -6,6 +6,22 @@ date.
 
 ---
 
+## 2026-06-15 — More physics models (circular motion, standing waves, Coulomb)
+
+**Prompt:** "Add more Physics models"
+
+**Changes:**
+- Added `src/models/circularMotion.ts` — Uniform Circular Motion (centripetal
+  acceleration & force, animated object with velocity/force vectors).
+- Added `src/models/standingWave.ts` — Standing Waves on a string (harmonics,
+  nodes/antinodes, resonant frequencies fₙ = nv/2L).
+- Added `src/models/coulomb.ts` — Coulomb's Law (attraction/repulsion, inverse-
+  square force vs distance).
+- Registered all three with Japanese title/description and Learn content (now
+  23 models total).
+
+---
+
 ## 2026-06-15 — More biology models
 
 **Prompt:** "Add more biology models"

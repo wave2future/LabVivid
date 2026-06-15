@@ -20,6 +20,9 @@ import { reactionRate } from './reactionRate';
 import { predatorPrey } from './predatorPrey';
 import { genetics } from './genetics';
 import { enzymeKinetics } from './enzymeKinetics';
+import { circularMotion } from './circularMotion';
+import { standingWave } from './standingWave';
+import { coulomb } from './coulomb';
 
 export const models: ModelDefinition[] = [
   projectileMotion,
@@ -33,6 +36,9 @@ export const models: ModelDefinition[] = [
   lens,
   collisions,
   refraction,
+  circularMotion,
+  standingWave,
+  coulomb,
   idealGas,
   population,
   predatorPrey,
