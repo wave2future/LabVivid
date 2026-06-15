@@ -6,6 +6,21 @@ date.
 
 ---
 
+## 2026-06-15 — Black hole & solar system simulations
+
+**Prompt:** "Add two more models (black hole simulation, the solar system
+simulation) in physics category"
+
+**Changes:**
+- `src/models/solarSystem.ts` — Solar System (planets on Keplerian orbits,
+  T = a^1.5; adjustable count, time speed, labels; sqrt radial scaling).
+- `src/models/blackHole.ts` — Black Hole (Schwarzschild radius Rs = 2GM/c²,
+  photon sphere, ISCO, animated glowing accretion disk on a dark field).
+- Registered both with Japanese title/description and Learn content (now 46
+  models total).
+
+---
+
 ## 2026-06-15 — More physics models (RC circuit, friction, heating curve)
 
 **Prompt:** "Add more physics models"

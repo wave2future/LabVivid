@@ -38,6 +38,8 @@ import { orbit } from './orbit';
 import { rcCircuit } from './rcCircuit';
 import { friction } from './friction';
 import { heatingCurve } from './heatingCurve';
+import { solarSystem } from './solarSystem';
+import { blackHole } from './blackHole';
 import { unitCircle } from './unitCircle';
 import { quadratic } from './quadratic';
 import { vectorAddition } from './vectorAddition';
@@ -72,6 +74,8 @@ export const models: ModelDefinition[] = [
   rcCircuit,
   friction,
   heatingCurve,
+  solarSystem,
+  blackHole,
   idealGas,
   population,
   predatorPrey,
