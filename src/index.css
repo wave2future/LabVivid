@@ -74,6 +74,12 @@ input, select, textarea { font-family: inherit; }
 .iconbtn:hover { border-color: var(--border-strong); background: var(--panel); }
 .iconbtn.active { border-color: var(--accent); color: var(--accent); }
 .hamburger { display: none; font-size: 18px; line-height: 1; padding: 7px 11px; }
+.lang-select {
+  background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+  border-radius: var(--radius-sm); padding: 8px 10px; font-size: 13px; font-weight: 600;
+}
+.lang-select:hover { border-color: var(--border-strong); }
+.lang-select:focus { outline: none; border-color: var(--accent); }
 
 /* ---------- Shell + Sidebar ---------- */
 .shell { display: flex; align-items: flex-start; flex: 1; }
@@ -253,6 +259,18 @@ input[type='range']::-moz-range-thumb {
 }
 .suggested button:hover { color: var(--text); border-color: var(--accent); }
 .hint { font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+/* learn */
+.learn section { margin-bottom: 14px; }
+.learn section:last-child { margin-bottom: 0; }
+.learn-h {
+  margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.03em;
+  text-transform: uppercase; color: var(--accent);
+}
+.learn-p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--text-2); }
+.learn-tips { margin: 0; padding-left: 18px; }
+.learn-tips li { font-size: 13.5px; line-height: 1.55; color: var(--text-2); margin-bottom: 6px; }
+.learn-tips li:last-child { margin-bottom: 0; }
 
 /* notes */
 .note-item {

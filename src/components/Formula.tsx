@@ -2,7 +2,7 @@
 import { useMemo } from 'react';
 import katex from 'katex';
 import type { FormulaSpec } from '../types/model';
-import { useI18n } from '../i18n';
+import { useI18n, type Lang } from '../i18n';
 
 export function Formula({ formulas }: { formulas: FormulaSpec[] }) {
   const { lang } = useI18n();
@@ -15,7 +15,7 @@ export function Formula({ formulas }: { formulas: FormulaSpec[] }) {
   );
 }
 
-function FormulaItem({ spec, lang }: { spec: FormulaSpec; lang: 'en' | 'zh' }) {
+function FormulaItem({ spec, lang }: { spec: FormulaSpec; lang: Lang }) {
   const html = useMemo(() => {
     try {
       return katex.renderToString(spec.tex, { throwOnError: false, displayMode: true });

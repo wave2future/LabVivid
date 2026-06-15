@@ -86,9 +86,11 @@ export const idealGas: ModelDefinition = {
     id: 'ideal-gas-law',
     title: 'Ideal Gas Law',
     titleZh: '理想气体定律',
+    titleJa: '理想気体の法則',
     subject: 'chemistry',
     description: 'Change temperature, volume, and amount of gas to see how pressure responds via PV = nRT.',
     descriptionZh: '改变温度、体积和气体的量，观察压强如何随 PV = nRT 变化。',
+    descriptionJa: '温度・体積・物質量を変え、PV = nRT によって圧力がどう変化するかを観察します。',
     difficulty: 'high-school',
     tags: ['gas', 'pressure', 'temperature', 'PV=nRT'],
     accent: '#c084fc',
@@ -130,4 +132,21 @@ export const idealGas: ModelDefinition = {
     { en: 'Why does heating the gas raise the pressure?', zh: '为什么加热气体会升高压强？' },
     { en: 'How does adding more gas change things?', zh: '加入更多气体会有什么变化？' },
   ],
+  learn: {
+    intro: {
+      en: 'The ideal gas law ties together the pressure, volume, temperature, and amount of a gas.',
+      zh: '理想气体定律把气体的压强、体积、温度和物质的量联系在一起。',
+      ja: '理想気体の法則は、気体の圧力・体積・温度・物質量を結びつけます。',
+    },
+    principle: {
+      en: 'PV = nRT: squeeze the gas or heat it and the pressure rises, because the moving particles hit the walls harder and more often.',
+      zh: 'PV = nRT：压缩或加热气体，压强升高，因为运动的粒子撞击器壁更猛烈、更频繁。',
+      ja: 'PV = nRT：圧縮や加熱で圧力が上がります。動く粒子が壁に強く・頻繁に衝突するからです。',
+    },
+    tips: [
+      { en: 'Halve the volume at fixed temperature and the pressure doubles (Boyle’s law).', zh: '温度不变时体积减半，压强加倍（玻意耳定律）。', ja: '温度一定で体積を半分にすると圧力は 2 倍になります（ボイルの法則）。' },
+      { en: 'Heat the gas and watch the particles speed up and the pressure climb.', zh: '加热气体，看粒子加速、压强升高。', ja: '加熱すると粒子が速くなり、圧力が上がります。' },
+      { en: 'Adding more gas raises the pressure even without heating.', zh: '加入更多气体，即使不加热压强也会升高。', ja: '気体を増やすと、加熱しなくても圧力が上がります。' },
+    ],
+  },
 };

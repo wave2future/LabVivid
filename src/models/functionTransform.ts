@@ -106,9 +106,11 @@ export const functionTransform: ModelDefinition = {
     id: 'function-transform',
     title: 'Function Transformation',
     titleZh: '函数变换',
+    titleJa: '関数の変換',
     subject: 'math',
     description: 'See how shifting, scaling, and reflecting change the graph of a function: g(x) = a·f(x−h)+k.',
     descriptionZh: '观察平移、缩放和翻转如何改变函数图像：g(x) = a·f(x−h)+k。',
+    descriptionJa: '平行移動・拡大縮小・反転がグラフをどう変えるかを見ます：g(x) = a·f(x−h)+k。',
     difficulty: 'high-school',
     tags: ['functions', 'translation', 'scaling', 'reflection'],
     accent: '#f472b6',
@@ -158,4 +160,21 @@ export const functionTransform: ModelDefinition = {
     { en: 'How does a negative scale factor change the curve?', zh: '负的缩放因子如何改变曲线？' },
     { en: 'What is the difference between h and k?', zh: 'h 和 k 有什么区别？' },
   ],
+  learn: {
+    intro: {
+      en: 'Function transformation shows how changing a few numbers shifts, stretches, or flips the graph of a function.',
+      zh: '函数变换展示了改变几个数值如何对函数图像进行平移、伸缩或翻转。',
+      ja: '関数の変換は、いくつかの数を変えるだけでグラフが平行移動・拡大縮小・反転する様子を示します。',
+    },
+    principle: {
+      en: 'In g(x) = a·f(x−h)+k, h moves the graph horizontally, k moves it vertically, and a scales it (negative a flips it).',
+      zh: '在 g(x) = a·f(x−h)+k 中，h 使图像水平移动，k 使其竖直移动，a 进行缩放（a 为负则翻转）。',
+      ja: 'g(x) = a·f(x−h)+k では、h が左右、k が上下に動かし、a が拡大縮小します（a が負なら反転）。',
+    },
+    tips: [
+      { en: 'Change one parameter at a time to isolate its effect.', zh: '一次只改变一个参数，单独观察它的作用。', ja: '一度に 1 つだけ変えると、その効果が分かりやすくなります。' },
+      { en: 'Positive h moves the graph right, not left — watch carefully.', zh: 'h 为正时图像向右移（而非向左），注意观察。', ja: 'h が正だとグラフは（左ではなく）右に動きます。' },
+      { en: 'Compare g(x) with the dashed base curve f(x) to see the change.', zh: '把 g(x) 和虚线的基函数 f(x) 比较，看出变化。', ja: '破線の元の曲線 f(x) と比べると変化が分かります。' },
+    ],
+  },
 };

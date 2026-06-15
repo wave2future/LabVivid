@@ -10,13 +10,15 @@ import { DataPanel } from '../components/DataPanel';
 import { LineChart } from '../components/LineChart';
 import { Formula } from '../components/Formula';
 import { AIPanel } from '../components/AIPanel';
+import { LearnPanel } from '../components/LearnPanel';
 import { NotesPanel } from '../components/NotesPanel';
 import { sanitizeVariables, decodeVariables, encodeVariables, buildShareUrl } from '../runtime/urlState';
 import { loadNotes, setLastModel, type ExperimentNote } from '../runtime/notes';
-import { useI18n } from '../i18n';
+import { useI18n, pick } from '../i18n';
+import { FEATURES } from '../config';
 import type { Variables, Preset, ModelDefinition } from '../types/model';
 
-type MobileTab = 'data' | 'ai' | 'notes';
+type MobileTab = 'data' | 'learn' | 'ai' | 'notes';
 
 // Guard: resolve the model from the route, then mount the view so that the
 // simulation hooks always run with a defined model (no conditional hooks).
@@ -138,7 +140,7 @@ function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean 
     <div className="container">
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
         <Link className="iconbtn" to="/">← {t('nav.back')}</Link>
-        <h2 style={{ margin: 0, fontSize: 20 }}>{lang === 'zh' ? model.meta.titleZh : model.meta.title}</h2>
+        <h2 style={{ margin: 0, fontSize: 20 }}>{pick(lang, model.meta.title, model.meta.titleZh, model.meta.titleJa)}</h2>
         <span style={{ flex: 1 }} />
         <button className="iconbtn" onClick={share}>🔗 {t('share.share')}</button>
         <button className="iconbtn" onClick={screenshot}>📷 {t('share.screenshot')}</button>
@@ -154,9 +156,16 @@ function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean 
             <button className={mobileTab === 'data' ? 'active' : ''} onClick={() => setMobileTab('data')}>
               {t('panel.data')}
             </button>
-            <button className={mobileTab === 'ai' ? 'active' : ''} onClick={() => setMobileTab('ai')}>
-              {t('panel.ai')}
-            </button>
+            {model.learn && (
+              <button className={mobileTab === 'learn' ? 'active' : ''} onClick={() => setMobileTab('learn')}>
+                {t('panel.learn')}
+              </button>
+            )}
+            {FEATURES.aiExplanation && (
+              <button className={mobileTab === 'ai' ? 'active' : ''} onClick={() => setMobileTab('ai')}>
+                {t('panel.ai')}
+              </button>
+            )}
             <button className={mobileTab === 'notes' ? 'active' : ''} onClick={() => setMobileTab('notes')}>
               {t('panel.notes')}
             </button>
@@ -189,17 +198,26 @@ function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean 
             </div>
           </div>
 
-          <div className={`panel${mobileTab !== 'ai' ? ' mobile-hidden' : ''}`} data-tab="ai">
-            <div className="panel-head">
-              {t('panel.ai')}
-              <button className="iconbtn" style={{ padding: '4px 8px', fontSize: 12 }}
-                onClick={() => setAiEnabled((a) => !a)}>
-                {aiEnabled ? 'On' : 'Off'}
-              </button>
+          {model.learn && (
+            <div className={`panel${mobileTab !== 'learn' ? ' mobile-hidden' : ''}`} data-tab="learn">
+              <div className="panel-head">{t('panel.learn')}</div>
+              <LearnPanel learn={model.learn} />
             </div>
-            <AIPanel model={model} vars={vars} computed={sim.computed}
-              enabled={aiEnabled} onToggleEnabled={() => setAiEnabled((a) => !a)} />
-          </div>
+          )}
+
+          {FEATURES.aiExplanation && (
+            <div className={`panel${mobileTab !== 'ai' ? ' mobile-hidden' : ''}`} data-tab="ai">
+              <div className="panel-head">
+                {t('panel.ai')}
+                <button className="iconbtn" style={{ padding: '4px 8px', fontSize: 12 }}
+                  onClick={() => setAiEnabled((a) => !a)}>
+                  {aiEnabled ? 'On' : 'Off'}
+                </button>
+              </div>
+              <AIPanel model={model} vars={vars} computed={sim.computed}
+                enabled={aiEnabled} onToggleEnabled={() => setAiEnabled((a) => !a)} />
+            </div>
+          )}
 
           <div className={`panel${mobileTab !== 'notes' ? ' mobile-hidden' : ''}`} data-tab="notes">
             <div className="panel-head">{t('panel.notes')}</div>

@@ -10,6 +10,13 @@ import { idealGas } from './idealGas';
 import { population } from './population';
 import { derivative } from './derivative';
 import { fractions } from './fractions';
+import { inclinedPlane } from './inclinedPlane';
+import { wave } from './wave';
+import { lens } from './lens';
+import { collisions } from './collisions';
+import { refraction } from './refraction';
+import { phScale } from './phScale';
+import { reactionRate } from './reactionRate';
 
 export const models: ModelDefinition[] = [
   projectileMotion,
@@ -18,10 +25,17 @@ export const models: ModelDefinition[] = [
   titration,
   pendulum,
   springSHM,
+  inclinedPlane,
+  wave,
+  lens,
+  collisions,
+  refraction,
   idealGas,
   population,
   derivative,
   fractions,
+  phScale,
+  reactionRate,
 ];
 
 export function getModel(id: string): ModelDefinition | undefined {

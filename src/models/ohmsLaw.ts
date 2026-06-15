@@ -138,9 +138,11 @@ export const ohmsLaw: ModelDefinition = {
     id: 'ohms-law',
     title: "Ohm's Law Circuit",
     titleZh: '欧姆定律电路',
+    titleJa: 'オームの法則回路',
     subject: 'physics',
     description: 'Adjust voltage and resistance to see how current and power respond in a simple circuit.',
     descriptionZh: '调整电压和电阻，观察简单电路中电流和功率的变化。',
+    descriptionJa: '電圧と抵抗を変えて、単純な回路で電流と電力がどう変化するかを観察します。',
     difficulty: 'middle-school',
     tags: ['electricity', 'current', 'voltage', 'power'],
     accent: '#60a5fa',
@@ -183,4 +185,21 @@ export const ohmsLaw: ModelDefinition = {
     { en: 'How is power related to voltage and current?', zh: '功率与电压、电流有什么关系？' },
     { en: 'Why is there no current when the switch is open?', zh: '为什么开关断开时没有电流？' },
   ],
+  learn: {
+    intro: {
+      en: "Ohm's law is the basic rule connecting voltage, current, and resistance in an electric circuit.",
+      zh: '欧姆定律是连接电路中电压、电流和电阻的基本规律。',
+      ja: 'オームの法則は、回路の電圧・電流・抵抗を結ぶ基本的な法則です。',
+    },
+    principle: {
+      en: 'Current equals voltage divided by resistance (I = V/R); for a fixed voltage, more resistance means less current, and power is voltage times current.',
+      zh: '电流等于电压除以电阻（I = V/R）；电压固定时电阻越大电流越小，功率等于电压乘以电流。',
+      ja: '電流は電圧÷抵抗です（I = V/R）。電圧が一定なら抵抗が大きいほど電流は小さく、電力は電圧×電流です。',
+    },
+    tips: [
+      { en: 'Double the resistance and watch the current fall by half.', zh: '把电阻加倍，看电流减半。', ja: '抵抗を 2 倍にすると電流は半分になります。' },
+      { en: 'Open the switch and the current drops to zero.', zh: '断开开关，电流变为零。', ja: 'スイッチを開くと電流はゼロになります。' },
+      { en: 'Power rises quickly with voltage because it depends on both V and I.', zh: '功率随电压快速上升，因为它同时取决于 V 和 I。', ja: '電力は V と I の両方に依存するため、電圧とともに急に増えます。' },
+    ],
+  },
 };

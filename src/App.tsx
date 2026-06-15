@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { I18nContext, translate, type Lang } from './i18n';
+import { I18nContext, translate, LANGS, type Lang } from './i18n';
 import { LibraryPage } from './pages/LibraryPage';
 import { ModelPage } from './pages/ModelPage';
 import { Sidebar } from './components/Sidebar';
@@ -32,7 +32,7 @@ export default function App() {
       <HashRouter>
         <Shell
           lang={lang}
-          onToggleLang={() => setLang(lang === 'en' ? 'zh' : 'en')}
+          setLang={setLang}
           isDark={isDark}
           onToggleTheme={() => setTheme(isDark ? 'light' : 'dark')}
         />
@@ -42,8 +42,8 @@ export default function App() {
 }
 
 function Shell({
-  lang, onToggleLang, isDark, onToggleTheme,
-}: { lang: Lang; onToggleLang: () => void; isDark: boolean; onToggleTheme: () => void }) {
+  lang, setLang, isDark, onToggleTheme,
+}: { lang: Lang; setLang: (l: Lang) => void; isDark: boolean; onToggleTheme: () => void }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
@@ -54,7 +54,7 @@ function Shell({
     <div className="app">
       <TopBar
         lang={lang}
-        onToggleLang={onToggleLang}
+        setLang={setLang}
         isDark={isDark}
         onToggleTheme={onToggleTheme}
         onToggleSidebar={() => setSidebarOpen((o) => !o)}
@@ -74,9 +74,9 @@ function Shell({
 }
 
 function TopBar({
-  lang, onToggleLang, isDark, onToggleTheme, onToggleSidebar,
+  lang, setLang, isDark, onToggleTheme, onToggleSidebar,
 }: {
-  lang: Lang; onToggleLang: () => void; isDark: boolean;
+  lang: Lang; setLang: (l: Lang) => void; isDark: boolean;
   onToggleTheme: () => void; onToggleSidebar: () => void;
 }) {
   const t = (k: string) => translate(lang, k);
@@ -93,9 +93,16 @@ function TopBar({
         </span>
       </Link>
       <span className="spacer" />
-      <button className="iconbtn" onClick={onToggleLang} aria-label={t('lang.toggle')}>
-        {t('lang.toggle')}
-      </button>
+      <select
+        className="lang-select"
+        value={lang}
+        onChange={(e) => setLang(e.target.value as Lang)}
+        aria-label={t('lang.label')}
+      >
+        {LANGS.map((l) => (
+          <option key={l.code} value={l.code}>{l.label}</option>
+        ))}
+      </select>
       <button className="iconbtn" onClick={onToggleTheme} aria-label={t('theme.toggle')}>
         {isDark ? '☀' : '☾'}
       </button>

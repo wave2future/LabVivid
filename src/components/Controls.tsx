@@ -1,7 +1,7 @@
 // Parameter control system: sliders, toggles, numbers, selects, presets
 // (FR-005, §13.3). Keyboard accessible (NFR §11.4).
 import type { Control, Variables, Preset } from '../types/model';
-import { useI18n } from '../i18n';
+import { useI18n, type Lang } from '../i18n';
 
 interface Props {
   controls: Control[];
@@ -36,7 +36,7 @@ export function Controls({ controls, presets, vars, onChange, onPreset }: Props)
 
 function ControlInput({
   control: c, value, onChange, lang,
-}: { control: Control; value: number | string | boolean; onChange: Props['onChange']; lang: 'en' | 'zh' }) {
+}: { control: Control; value: number | string | boolean; onChange: Props['onChange']; lang: Lang }) {
   const label = lang === 'zh' ? c.labelZh : c.label;
 
   if (c.type === 'slider') {

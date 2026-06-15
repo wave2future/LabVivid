@@ -13,9 +13,13 @@ export interface ModelMetadata {
   /** i18n key suffix; title/description resolved via t(`model.${id}.title`) */
   title: string;
   titleZh: string;
+  /** Optional Japanese title; falls back to English when absent. */
+  titleJa?: string;
   subject: Subject;
   description: string;
   descriptionZh: string;
+  /** Optional Japanese description; falls back to English when absent. */
+  descriptionJa?: string;
   difficulty: 'elementary' | 'middle-school' | 'high-school' | 'college';
   tags: string[];
   /** accent color used in cards and canvas */
@@ -96,6 +100,21 @@ export interface FormulaSpec {
   labelZh: string;
 }
 
+/** A localized string; Japanese is optional and falls back to English. */
+export interface Localized {
+  en: string;
+  zh: string;
+  ja?: string;
+}
+
+/** Learning content shown in the model's "Learn" panel:
+ *  a short introduction, the underlying principle, and practical tips. */
+export interface LearnContent {
+  intro: Localized;
+  principle: Localized;
+  tips: Localized[];
+}
+
 /** Result of computing a model at a given (variables, time). */
 export interface ComputeResult {
   data: DataValue[];
@@ -140,4 +159,6 @@ export interface ModelDefinition {
   render(rc: RenderContext): void;
   /** Suggested questions for the AI panel (FR-022). */
   suggestedQuestions: { en: string; zh: string }[];
+  /** Introduction, principle, and understanding tips for the Learn panel. */
+  learn?: LearnContent;
 }

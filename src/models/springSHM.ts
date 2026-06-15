@@ -104,9 +104,11 @@ export const springSHM: ModelDefinition = {
     id: 'spring-mass-shm',
     title: 'Mass on a Spring',
     titleZh: '弹簧振子',
+    titleJa: 'ばね振り子',
     subject: 'physics',
     description: "Explore Hooke's law and simple harmonic motion: how mass and stiffness set the oscillation.",
     descriptionZh: '探索胡克定律与简谐运动：质量和劲度系数如何决定振动。',
+    descriptionJa: 'フックの法則と単振動：質量とばね定数が振動をどう決めるかを探ります。',
     difficulty: 'high-school',
     tags: ['Hooke', 'SHM', 'oscillation', 'force'],
     accent: '#fb923c',
@@ -148,4 +150,21 @@ export const springSHM: ModelDefinition = {
     { en: 'Does a larger amplitude change the period?', zh: '更大的振幅会改变周期吗？' },
     { en: 'Where is the speed greatest?', zh: '速度在哪里最大？' },
   ],
+  learn: {
+    intro: {
+      en: 'A mass on a spring bounces back and forth in simple harmonic motion, the model for many vibrations in nature.',
+      zh: '弹簧上的质量来回振动，做简谐运动，是自然界许多振动的模型。',
+      ja: 'ばねにつないだおもりは単振動で行き来し、自然界の多くの振動のモデルになります。',
+    },
+    principle: {
+      en: "The spring pulls back with a force proportional to displacement (F = −kx); a heavier mass oscillates slower, a stiffer spring faster, and the amplitude does not change the period.",
+      zh: '弹簧的回复力与位移成正比（F = −kx）；质量越大振动越慢，弹簧越硬越快，振幅不影响周期。',
+      ja: 'ばねは変位に比例した力で引き戻します（F = −kx）。重いほど遅く、硬いほど速く振動し、振幅は周期に影響しません。',
+    },
+    tips: [
+      { en: 'Increase the mass and the oscillation slows down.', zh: '增大质量，振动变慢。', ja: '質量を増やすと振動は遅くなります。' },
+      { en: 'Speed is greatest at the centre and zero at the turning points.', zh: '在中心速度最大，在两端速度为零。', ja: '速さは中心で最大、両端でゼロです。' },
+      { en: 'The period stays the same even if you change the amplitude.', zh: '即使改变振幅，周期也保持不变。', ja: '振幅を変えても周期は同じままです。' },
+    ],
+  },
 };

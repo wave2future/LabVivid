@@ -93,9 +93,11 @@ export const derivative: ModelDefinition = {
     id: 'derivative-tangent',
     title: 'Derivative & Tangent',
     titleZh: '导数与切线',
+    titleJa: '微分と接線',
     subject: 'math',
     description: 'Slide a point along a curve and watch the tangent line and its slope — the derivative.',
     descriptionZh: '沿曲线移动一个点，观察切线及其斜率——也就是导数。',
+    descriptionJa: '曲線上の点を動かし、接線とその傾き（微分）を観察します。',
     difficulty: 'high-school',
     tags: ['calculus', 'derivative', 'slope', 'tangent'],
     accent: '#fb7185',
@@ -143,4 +145,21 @@ export const derivative: ModelDefinition = {
     { en: 'Where is the slope zero?', zh: '斜率在哪里为零？' },
     { en: 'Why is the slope negative on the left side?', zh: '为什么左侧斜率为负？' },
   ],
+  learn: {
+    intro: {
+      en: 'The derivative measures how fast a function is changing at a point — the slope of its tangent line.',
+      zh: '导数衡量函数在某点的变化快慢——也就是切线的斜率。',
+      ja: '微分は、関数がある点でどれだけ速く変化しているか（接線の傾き）を表します。',
+    },
+    principle: {
+      en: 'Zoom in far enough and any smooth curve looks straight; that local slope is the derivative, positive where the curve rises and zero at peaks and valleys.',
+      zh: '放大到足够近，任何光滑曲线都近似为直线；这个局部斜率就是导数，曲线上升处为正，在峰谷处为零。',
+      ja: '十分に拡大すると、なめらかな曲線は直線に見えます。その局所的な傾きが微分で、上りで正、山や谷でゼロです。',
+    },
+    tips: [
+      { en: 'Slide the point to a peak or valley to find where the slope is zero.', zh: '把点滑到峰或谷，找出斜率为零的位置。', ja: '点を山や谷に動かすと、傾きがゼロになる場所が分かります。' },
+      { en: 'On a downhill section the slope (and derivative) is negative.', zh: '在下坡段，斜率（导数）为负。', ja: '下り坂では傾き（微分）は負になります。' },
+      { en: 'Switch functions to compare how their slopes behave.', zh: '切换函数，比较它们的斜率行为。', ja: '関数を切り替えて、傾きの振る舞いを比べましょう。' },
+    ],
+  },
 };

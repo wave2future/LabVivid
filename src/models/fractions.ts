@@ -112,9 +112,11 @@ export const fractions: ModelDefinition = {
     id: 'fractions',
     title: 'Fractions',
     titleZh: '分数',
+    titleJa: '分数',
     subject: 'math',
     description: 'See a fraction as pie slices, square cuts, or a grid — including improper fractions.',
     descriptionZh: '用饼图、方块切分或网格直观理解分数，也包括假分数。',
+    descriptionJa: '分数を円グラフ・正方形の分割・グリッドで視覚化（仮分数も対応）。',
     difficulty: 'elementary',
     tags: ['fractions', 'numerator', 'denominator', 'visual'],
     accent: '#38bdf8',
@@ -163,4 +165,21 @@ export const fractions: ModelDefinition = {
     { en: 'Is this a proper or improper fraction?', zh: '这是真分数还是假分数？' },
     { en: 'What is an equivalent fraction for this?', zh: '它的等值分数是什么？' },
   ],
+  learn: {
+    intro: {
+      en: 'A fraction shows part of a whole — how many equal pieces you have out of the total.',
+      zh: '分数表示整体的一部分——在总份数中你拥有多少等份。',
+      ja: '分数は全体の一部、つまり全部のうち等しい何個分を持っているかを表します。',
+    },
+    principle: {
+      en: 'The denominator is how many equal parts the whole is split into; the numerator is how many you take. Different fractions can shade the same amount (equivalent fractions).',
+      zh: '分母是整体被平均分成的份数；分子是取走的份数。不同的分数可以表示相同的量（等值分数）。',
+      ja: '分母は全体を等しく分ける個数、分子は取る個数です。違う分数でも同じ量を表すことがあります（等しい分数）。',
+    },
+    tips: [
+      { en: 'Compare 1/2 and 2/4 — they shade the same area.', zh: '比较 1/2 和 2/4——它们涂色的面积相同。', ja: '1/2 と 2/4 を比べると、塗る面積は同じです。' },
+      { en: 'When the numerator passes the denominator, you have more than one whole.', zh: '当分子超过分母时，就超过了一个整体。', ja: '分子が分母を超えると、1 つの全体より大きくなります。' },
+      { en: 'Switch between pie, square, and grid to see the same fraction three ways.', zh: '在饼图、方块和网格之间切换，用三种方式看同一个分数。', ja: '円・正方形・グリッドを切り替えて、同じ分数を 3 通りで見ましょう。' },
+    ],
+  },
 };

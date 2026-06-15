@@ -114,9 +114,11 @@ export const population: ModelDefinition = {
     id: 'population-growth',
     title: 'Population Growth',
     titleZh: '种群增长',
+    titleJa: '個体数の成長',
     subject: 'biology',
     description: 'Compare exponential and logistic growth, and see how carrying capacity limits a population.',
     descriptionZh: '比较指数增长与逻辑斯蒂增长，观察环境容纳量如何限制种群。',
+    descriptionJa: '指数成長とロジスティック成長を比べ、環境収容力が個体数をどう制限するかを見ます。',
     difficulty: 'high-school',
     tags: ['ecology', 'logistic', 'growth', 'carrying capacity'],
     accent: '#4ade80',
@@ -158,4 +160,21 @@ export const population: ModelDefinition = {
     { en: 'Why does logistic growth slow down?', zh: '为什么逻辑斯蒂增长会减慢？' },
     { en: 'Where is growth fastest?', zh: '增长在哪里最快？' },
   ],
+  learn: {
+    intro: {
+      en: 'Population growth models how a group of living things increases over time.',
+      zh: '种群增长模型描述生物群体数量如何随时间增加。',
+      ja: '個体数の成長モデルは、生物の集団が時間とともにどう増えるかを表します。',
+    },
+    principle: {
+      en: 'Growth starts nearly exponential but slows as the population nears the carrying capacity K, tracing an S-shaped logistic curve.',
+      zh: '增长起初接近指数式，但在接近环境容纳量 K 时减慢，形成 S 形逻辑斯蒂曲线。',
+      ja: '成長は最初ほぼ指数的ですが、環境収容力 K に近づくと鈍り、S 字のロジスティック曲線を描きます。',
+    },
+    tips: [
+      { en: 'Compare the logistic curve with the runaway exponential one.', zh: '比较逻辑斯蒂曲线与失控的指数曲线。', ja: 'ロジスティック曲線と、際限なく増える指数曲線を比べましょう。' },
+      { en: 'Growth is fastest around half the carrying capacity (K/2).', zh: '在容纳量一半（K/2）附近增长最快。', ja: '成長は収容力の半分（K/2）あたりで最も速くなります。' },
+      { en: 'A higher rate reaches the ceiling sooner, but the ceiling is still K.', zh: '增长率越高越早到达上限，但上限仍是 K。', ja: '成長率が高いほど早く上限に達しますが、上限はやはり K です。' },
+    ],
+  },
 };

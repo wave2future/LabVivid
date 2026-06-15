@@ -115,9 +115,11 @@ export const projectileMotion: ModelDefinition = {
     id: 'projectile-motion',
     title: 'Projectile Motion',
     titleZh: '抛体运动',
+    titleJa: '放物運動',
     subject: 'physics',
     description: 'Launch a projectile and explore how angle, speed, and gravity shape its parabolic path.',
     descriptionZh: '发射一个物体，探索角度、速度和重力如何决定它的抛物线轨迹。',
+    descriptionJa: '物体を発射し、角度・速さ・重力が放物線の軌道をどう決めるかを探ります。',
     difficulty: 'middle-school',
     tags: ['kinematics', 'gravity', 'parabola', 'velocity'],
     accent: '#5eead4',
@@ -161,4 +163,21 @@ export const projectileMotion: ModelDefinition = {
     { en: 'What angle gives the maximum range?', zh: '什么角度射程最大？' },
     { en: 'How does lower gravity affect the flight?', zh: '更小的重力如何影响飞行？' },
   ],
+  learn: {
+    intro: {
+      en: 'Projectile motion is the curved path an object follows when thrown near Earth, acted on only by gravity.',
+      zh: '抛体运动是物体在地面附近被抛出后、仅受重力作用所走过的曲线路径。',
+      ja: '放物運動とは、地表付近で投げられた物体が重力だけを受けて描く曲線の運動です。',
+    },
+    principle: {
+      en: 'Horizontal and vertical motion are independent: the horizontal velocity stays constant while gravity steadily changes the vertical velocity, producing a parabola.',
+      zh: '水平方向与竖直方向相互独立：水平速度保持不变，而重力持续改变竖直速度，从而形成抛物线。',
+      ja: '水平方向と鉛直方向の運動は独立しています。水平速度は一定のまま、重力が鉛直速度を変え、放物線を描きます。',
+    },
+    tips: [
+      { en: 'Set the angle to 45° to see the maximum range (with no air resistance).', zh: '把角度设为 45°，看看（无空气阻力时）最大的射程。', ja: '角度を 45° にすると（空気抵抗なしで）最大の飛距離になります。' },
+      { en: 'Complementary angles like 30° and 60° give the same range.', zh: '互补角（如 30° 与 60°）的射程相同。', ja: '30° と 60° のような余角どうしは同じ飛距離になります。' },
+      { en: 'Lower gravity (try the Moon preset) makes the projectile fly much farther.', zh: '重力更小（试试月球预设）会让物体飞得更远。', ja: '重力が小さい（月のプリセット）と、はるかに遠くまで飛びます。' },
+    ],
+  },
 };

@@ -93,9 +93,11 @@ export const pendulum: ModelDefinition = {
     id: 'simple-pendulum',
     title: 'Simple Pendulum',
     titleZh: '单摆',
+    titleJa: '単振り子',
     subject: 'physics',
     description: 'Swing a pendulum and discover how length and gravity set its period — independent of mass.',
     descriptionZh: '让单摆摆动，探索摆长和重力如何决定周期——而与质量无关。',
+    descriptionJa: '振り子を振らせ、長さと重力が周期を決めること（質量に依存しない）を確かめます。',
     difficulty: 'high-school',
     tags: ['oscillation', 'period', 'gravity', 'SHM'],
     accent: '#22d3ee',
@@ -137,4 +139,21 @@ export const pendulum: ModelDefinition = {
     { en: 'Does the mass of the bob matter?', zh: '摆球的质量有影响吗？' },
     { en: 'Why does the period change on the Moon?', zh: '为什么在月球上周期会变化？' },
   ],
+  learn: {
+    intro: {
+      en: 'A simple pendulum is a mass swinging on a string — one of the clearest examples of regular, repeating motion.',
+      zh: '单摆是悬挂在绳上的摆动质量——规则重复运动最清晰的例子之一。',
+      ja: '単振り子は糸につるしたおもりの振動で、規則的な繰り返し運動の最も分かりやすい例の一つです。',
+    },
+    principle: {
+      en: 'For small swings the period depends only on length and gravity (T = 2π√(L/g)), not on the mass or how far it swings.',
+      zh: '小角度摆动时，周期只取决于摆长和重力（T = 2π√(L/g)），与质量和摆幅无关。',
+      ja: '小さな振れでは、周期は長さと重力だけで決まり（T = 2π√(L/g)）、質量や振れ幅には依存しません。',
+    },
+    tips: [
+      { en: 'Make the string longer and the swing slows down.', zh: '把绳加长，摆动会变慢。', ja: '糸を長くすると振動はゆっくりになります。' },
+      { en: 'Changing the amplitude barely changes the period for small angles.', zh: '改变振幅几乎不改变周期（小角度时）。', ja: '小角度では、振幅を変えても周期はほとんど変わりません。' },
+      { en: 'Try the Moon preset to see a slower swing under weaker gravity.', zh: '试试月球预设，看看较弱重力下更慢的摆动。', ja: '月のプリセットで、弱い重力でのゆっくりした振動を見てみましょう。' },
+    ],
+  },
 };

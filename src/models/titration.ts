@@ -147,9 +147,11 @@ export const titration: ModelDefinition = {
     id: 'acid-base-titration',
     title: 'Acid-Base Titration',
     titleZh: '酸碱滴定',
+    titleJa: '酸塩基滴定',
     subject: 'chemistry',
     description: 'Add base to an acid and watch the pH curve, color change, and equivalence point.',
     descriptionZh: '向酸中加入碱，观察 pH 曲线、颜色变化和当量点。',
+    descriptionJa: '酸に塩基を加え、pH 曲線・色の変化・当量点を観察します。',
     difficulty: 'high-school',
     tags: ['pH', 'neutralization', 'titration', 'indicator'],
     accent: '#a78bfa',
@@ -199,4 +201,21 @@ export const titration: ModelDefinition = {
     { en: 'Why does the pH jump suddenly?', zh: '为什么 pH 会突然跳变？' },
     { en: 'Which indicator should I choose?', zh: '我应该选哪种指示剂？' },
   ],
+  learn: {
+    intro: {
+      en: 'Titration finds an unknown concentration by adding a measured base to an acid until they exactly neutralize.',
+      zh: '滴定通过向酸中加入定量的碱直到恰好中和，来测定未知浓度。',
+      ja: '滴定は、酸に既知量の塩基を加えてちょうど中和させ、未知の濃度を求める方法です。',
+    },
+    principle: {
+      en: 'Near the equivalence point a tiny amount of base causes a large pH jump, because almost all the acid has already been neutralized.',
+      zh: '在当量点附近，极少量的碱就会引起 pH 的大幅跳变，因为此时酸几乎已被中和。',
+      ja: '当量点付近では酸がほぼ中和されているため、ごくわずかな塩基で pH が大きく跳ね上がります。',
+    },
+    tips: [
+      { en: 'Watch the pH curve stay flat, then jump sharply at the equivalence point.', zh: '观察 pH 曲线先平缓，然后在当量点急剧跳变。', ja: 'pH 曲線が平らなまま、当量点で急に跳ね上がるのを見てください。' },
+      { en: 'Choose an indicator whose color change matches the pH jump.', zh: '选择变色范围与 pH 突跃匹配的指示剂。', ja: '色の変化が pH の跳びと一致する指示薬を選びましょう。' },
+      { en: 'With equal concentrations, neutralization happens at equal volumes.', zh: '浓度相等时，等体积即可中和。', ja: '濃度が等しければ、同じ体積で中和します。' },
+    ],
+  },
 };
