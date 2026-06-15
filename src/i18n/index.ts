@@ -61,6 +61,7 @@ export const strings: Dict = {
   'panel.ai': { en: 'AI Explanation', zh: 'AI 讲解', ja: 'AI 解説' },
   'panel.notes': { en: 'Notes', zh: '实验笔记', ja: 'メモ' },
   'panel.learn': { en: 'Learn', zh: '学习', ja: '学習' },
+  'panel.periodicTable': { en: 'Periodic Table', zh: '元素周期表', ja: '周期表' },
   'learn.intro': { en: 'Introduction', zh: '介绍', ja: 'はじめに' },
   'learn.principle': { en: 'How it works', zh: '原理', ja: 'しくみ' },
   'learn.tips': { en: 'Tips for understanding', zh: '理解提示', ja: '理解のヒント' },

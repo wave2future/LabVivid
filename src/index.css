@@ -171,6 +171,11 @@ input, select, textarea { font-family: inherit; }
 }
 .panel > .panel-body { padding: 14px 16px; }
 
+/* embedded page (iframe) stage */
+.embed-stage { position: relative; background: #0a0e16; border-radius: var(--radius); overflow: hidden; }
+.embed-frame { width: 100%; height: 620px; border: 0; display: block; }
+.classroom .embed-frame { height: 100%; }
+
 /* interactive 3D stage */
 .three-stage { position: relative; background: #05070f; border-radius: var(--radius); overflow: hidden; }
 .three-mount { width: 100%; aspect-ratio: 16 / 10; cursor: grab; }

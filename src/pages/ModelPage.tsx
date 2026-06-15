@@ -198,13 +198,15 @@ function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean 
         </div>
 
         <div className="side-col">
-          <div className="panel">
-            <div className="panel-head">{t('ctrl.parameters')}</div>
-            <div className="panel-body">
-              <Controls controls={model.controls} presets={model.presets} vars={vars}
-                onChange={onChange} onPreset={onPreset} />
+          {model.controls.length > 0 && (
+            <div className="panel">
+              <div className="panel-head">{t('ctrl.parameters')}</div>
+              <div className="panel-body">
+                <Controls controls={model.controls} presets={model.presets} vars={vars}
+                  onChange={onChange} onPreset={onPreset} />
+              </div>
             </div>
-          </div>
+          )}
 
           {model.learn && (
             <div className={`panel${mobileTab !== 'learn' ? ' mobile-hidden' : ''}`} data-tab="learn">

@@ -20,6 +20,7 @@ import { reactionRate } from './reactionRate';
 import { equilibrium } from './equilibrium';
 import { beerLambert } from './beerLambert';
 import { radioactiveDecay } from './radioactiveDecay';
+import { periodicTable } from './periodicTable';
 import { predatorPrey } from './predatorPrey';
 import { genetics } from './genetics';
 import { enzymeKinetics } from './enzymeKinetics';
@@ -94,6 +95,7 @@ export const models: ModelDefinition[] = [
   equilibrium,
   beerLambert,
   radioactiveDecay,
+  periodicTable,
 ];
 
 export function getModel(id: string): ModelDefinition | undefined {

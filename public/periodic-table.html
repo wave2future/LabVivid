@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Periodic Table — Interactive 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{
+  --bg:#0a0e16; --panel:#0f1524; --line:#1d2740;
+  --text:#e8ecf4; --muted:#8a94a8;
+  --alkali:#ff6e6e; --alkearth:#ffa94d; --transition:#ffd43b;
+  --posttrans:#69db7c; --metalloid:#38d9a9; --nonmetal:#4dabf7;
+  --halogen:#9775fa; --noble:#f783ac; --lanthanide:#66d9e8;
+  --actinide:#e599f7; --unknown:#8a94a8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scrollbar-color:#2a3552 var(--bg)}
+body{
+  background:var(--bg);
+  background-image:radial-gradient(1100px 600px at 50% -10%, #131c30 0%, transparent 60%);
+  color:var(--text);
+  font-family:'Space Grotesk',system-ui,sans-serif;
+  min-height:100vh; padding:32px 20px 64px;
+}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* ---------- header ---------- */
+header{max-width:1280px;margin:0 auto 26px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+h1{font-size:clamp(28px,4.4vw,46px);font-weight:700;letter-spacing:-.01em;line-height:1.1;
+  display:flex;align-items:center;flex-wrap:wrap;gap:2px}
+.el-chip{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:1.45em;height:1.45em;margin-right:.08em;border-radius:8px;
+  border:1px solid var(--c);color:var(--c);
+  background:color-mix(in srgb,var(--c) 10%, transparent);
+  font-weight:700}
+.chipnum{position:absolute;top:3px;left:5px;font-family:'IBM Plex Mono',monospace;
+  font-size:.22em;font-weight:400;opacity:.85}
+.sub{color:var(--muted);margin-top:10px;font-size:15px;max-width:60ch}
+
+.controls{max-width:1280px;margin:0 auto 18px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+#search{
+  font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);
+  background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:9px 14px;width:230px;outline:none;transition:border-color .15s}
+#search:focus{border-color:#3d5a9e}
+#search::placeholder{color:#5a6680}
+#lang{
+  font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);
+  background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:9px 12px;outline:none;cursor:pointer;transition:border-color .15s}
+#lang:focus,#lang:hover{border-color:#3d5a9e}
+#lang option{background:var(--panel);color:var(--text)}
+body.cjk .tile .nm{font-size:10px}
+body.cjk h1{letter-spacing:.04em}
+.legend{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);
+  background:transparent;border:1px solid var(--line);border-radius:99px;
+  padding:5px 11px;transition:all .15s}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.chip:hover{border-color:var(--c);color:var(--text)}
+.chip.active{background:color-mix(in srgb,var(--c) 14%, transparent);
+  border-color:var(--c);color:var(--text)}
+
+/* ---------- table ---------- */
+.table-wrap{max-width:1280px;margin:0 auto;overflow-x:auto;padding-bottom:8px}
+#grid{
+  display:grid;
+  grid-template-columns:repeat(18,minmax(58px,1fr));
+  grid-template-rows:repeat(7,auto) 18px repeat(2,auto);
+  gap:5px;min-width:1150px}
+.tile{
+  position:relative;aspect-ratio:1/1.05;border-radius:7px;cursor:pointer;
+  border:1px solid color-mix(in srgb,var(--c) 32%, transparent);
+  background:color-mix(in srgb,var(--c) 7%, #0d1320);
+  color:var(--text);font-family:inherit;text-align:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease, opacity .2s, filter .2s;
+  padding:2px}
+.tile:hover,.tile:focus-visible{
+  transform:translateY(-3px);border-color:var(--c);z-index:2;
+  box-shadow:0 8px 22px color-mix(in srgb,var(--c) 28%, transparent)}
+.tile:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.tile .num{position:absolute;top:4px;left:6px;font-family:'IBM Plex Mono',monospace;
+  font-size:9px;color:var(--muted)}
+.tile .sym{font-size:19px;font-weight:600;color:var(--c);line-height:1.05;margin-top:6px}
+.tile .nm{font-size:8.5px;color:var(--muted);margin-top:2px;max-width:95%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile .ms{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#5a6680;margin-top:1px}
+.tile.dim{opacity:.16;filter:saturate(.2)}
+.placeholder{
+  border-style:dashed;cursor:pointer;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted)}
+.series-label{
+  grid-column:1 / 4;align-self:center;justify-self:end;padding-right:10px;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5a6680;text-align:right}
+
+/* ---------- modal ---------- */
+.overlay{
+  position:fixed;inset:0;background:rgba(5,8,14,.78);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+.overlay.open{display:flex}
+.sheet{
+  width:min(920px,100%);max-height:92vh;overflow-y:auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:18px;
+  padding:26px;position:relative;
+  animation:rise .22s ease}
+@keyframes rise{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.sheet-grid{display:grid;grid-template-columns:360px 1fr;gap:26px}
+.close-btn,.nav-btn{
+  background:#161e32;border:1px solid var(--line);color:var(--muted);
+  border-radius:8px;cursor:pointer;font-family:'IBM Plex Mono',monospace;
+  font-size:13px;padding:7px 12px;transition:all .15s}
+.close-btn:hover,.nav-btn:hover{color:var(--text);border-color:#3d5a9e}
+.close-btn{position:absolute;top:16px;right:16px}
+.modal-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:4px}
+.modal-sym{font-size:54px;font-weight:700;color:var(--c);line-height:1}
+.modal-name{font-size:26px;font-weight:600}
+.modal-z{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted)}
+.cat-badge{
+  display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--c);
+  border:1px solid color-mix(in srgb,var(--c) 50%, transparent);
+  background:color-mix(in srgb,var(--c) 10%, transparent);
+  border-radius:99px;padding:4px 11px;margin:6px 0 14px}
+.fact{color:var(--muted);font-size:14.5px;line-height:1.5;margin-bottom:18px}
+.atom-box{position:relative}
+#atom-canvas{width:100%;aspect-ratio:1;border-radius:14px;
+  background:radial-gradient(circle at 50% 42%, #121a2e 0%, #0a0f1c 75%);
+  border:1px solid var(--line);cursor:grab;display:block;touch-action:none}
+#atom-canvas:active{cursor:grabbing}
+.shells-line{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);
+  text-align:center;margin-top:10px}
+.shells-line b{color:var(--text);font-weight:500}
+.hint{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5a6680;
+  text-align:center;margin-top:4px}
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:18px}
+.cell{background:#0d1322;padding:11px 14px}
+.cell.wide{grid-column:1 / -1}
+.cell .k{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;
+  text-transform:uppercase;color:#5a6680;margin-bottom:4px}
+.cell .v{font-size:14px;line-height:1.4}
+.cell .v .mono{font-size:13px}
+.spec-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;
+  text-transform:uppercase;color:#5a6680;margin-bottom:6px}
+#spectrum{width:100%;height:46px;border-radius:8px;border:1px solid var(--line);
+  background:#05070d;display:block}
+.modal-nav{display:flex;justify-content:space-between;margin-top:20px}
+
+@media (max-width:860px){
+  .sheet-grid{grid-template-columns:1fr}
+  body{padding:22px 12px 48px}
+}
+@media (prefers-reduced-motion:reduce){
+  .tile,.sheet{transition:none;animation:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow" id="eyebrow"></div>
+  <h1 id="title"></h1>
+  <p class="sub" id="subtitle"></p>
+</header>
+
+<div class="controls">
+  <select id="lang" aria-label="Language">
+    <option value="en">English</option>
+    <option value="zh">中文</option>
+    <option value="ja">日本語</option>
+    <option value="ko">한국어</option>
+    <option value="fr">Français</option>
+    <option value="de">Deutsch</option>
+  </select>
+  <input id="search" type="text" placeholder="" aria-label="Search elements">
+  <div class="legend" id="legend"></div>
+</div>
+
+<div class="table-wrap">
+  <div id="grid" role="grid" aria-label="Periodic table of elements"></div>
+</div>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Element details">
+  <div class="sheet">
+    <button class="close-btn" id="close-btn" aria-label="Close">ESC ✕</button>
+    <div class="sheet-grid">
+      <div class="atom-box">
+        <canvas id="atom-canvas"></canvas>
+        <div class="shells-line" id="shells-line"></div>
+        <div class="hint">drag to rotate</div>
+      </div>
+      <div>
+        <div class="modal-head">
+          <span class="modal-sym" id="m-sym"></span>
+          <span>
+            <div class="modal-name" id="m-name"></div>
+            <div class="modal-z mono" id="m-z"></div>
+          </span>
+        </div>
+        <span class="cat-badge" id="m-cat"></span>
+        <p class="fact" id="m-fact"></p>
+        <div class="data-grid" id="m-data"></div>
+        <div class="spec-label">Spectral signature (stylized)</div>
+        <canvas id="spectrum" width="600" height="46"></canvas>
+        <div class="modal-nav">
+          <button class="nav-btn" id="prev-btn">← prev</button>
+          <button class="nav-btn" id="next-btn">next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+/* [symbol, name, mass, category, melt(K), boil(K), density(g/cm3), discoveryYear, fact] */
+const CATS=[
+ ["Alkali metal","--alkali"],["Alkaline earth","--alkearth"],["Transition metal","--transition"],
+ ["Post-transition","--posttrans"],["Metalloid","--metalloid"],["Nonmetal","--nonmetal"],
+ ["Halogen","--halogen"],["Noble gas","--noble"],["Lanthanide","--lanthanide"],
+ ["Actinide","--actinide"],["Unknown","--unknown"]];
+const E=[
+["H","Hydrogen",1.008,5,13.99,20.27,0.0000899,1766,"Lightest element; fuels the stars through fusion."],
+["He","Helium",4.0026,7,0.95,4.22,0.000179,1868,"Inert gas first detected in sunlight before being found on Earth."],
+["Li","Lithium",6.94,0,453.7,1603,0.534,1817,"Lightest metal; powers rechargeable batteries."],
+["Be","Beryllium",9.0122,1,1560,2742,1.85,1798,"Stiff, light metal used in aerospace and X-ray windows."],
+["B","Boron",10.81,4,2349,4200,2.34,1808,"Essential for plant growth; used in glass and magnets."],
+["C","Carbon",12.011,5,3823,4098,2.27,0,"The backbone of all known life."],
+["N","Nitrogen",14.007,5,63.15,77.36,0.00125,1772,"Makes up 78% of Earth's atmosphere."],
+["O","Oxygen",15.999,5,54.36,90.19,0.00143,1774,"Supports combustion and respiration."],
+["F","Fluorine",18.998,6,53.48,85.03,0.0017,1886,"The most reactive and electronegative element."],
+["Ne","Neon",20.180,7,24.56,27.10,0.0009,1898,"Glows red-orange in discharge signs."],
+["Na","Sodium",22.990,0,370.9,1156,0.971,1807,"Soft metal that reacts violently with water."],
+["Mg","Magnesium",24.305,1,923,1363,1.738,1755,"Burns with a brilliant white light."],
+["Al","Aluminium",26.982,3,933.5,2792,2.70,1825,"Most abundant metal in Earth's crust."],
+["Si","Silicon",28.085,4,1687,3538,2.33,1824,"The heart of modern electronics."],
+["P","Phosphorus",30.974,5,317.3,553.7,1.82,1669,"Glows in the dark; vital in DNA and bones."],
+["S","Sulfur",32.06,5,388.4,717.8,2.07,0,"Yellow element known since antiquity as brimstone."],
+["Cl","Chlorine",35.45,6,171.6,239.1,0.0032,1774,"Disinfects drinking water worldwide."],
+["Ar","Argon",39.948,7,83.8,87.3,0.0018,1894,"About 1% of air; an inert shielding gas."],
+["K","Potassium",39.098,0,336.5,1032,0.862,1807,"Essential for nerve signals; reacts vigorously with water."],
+["Ca","Calcium",40.078,1,1115,1757,1.54,1808,"Builds bones, teeth, shells, and limestone."],
+["Sc","Scandium",44.956,2,1814,3109,2.99,1879,"Lightweight metal that strengthens aluminium alloys."],
+["Ti","Titanium",47.867,2,1941,3560,4.51,1791,"As strong as steel at nearly half the weight."],
+["V","Vanadium",50.942,2,2183,3680,6.0,1801,"Hardens steel for tools and springs."],
+["Cr","Chromium",51.996,2,2180,2944,7.15,1797,"Gives stainless steel its shine."],
+["Mn","Manganese",54.938,2,1519,2334,7.3,1774,"Strengthens steel; key to photosynthesis."],
+["Fe","Iron",55.845,2,1811,3134,7.87,0,"The most-used metal; forms the core of our planet."],
+["Co","Cobalt",58.933,2,1768,3200,8.86,1735,"Ancient blue pigment; the core of vitamin B12."],
+["Ni","Nickel",58.693,2,1728,3186,8.91,1751,"Corrosion-resistant metal found in coins and meteorites."],
+["Cu","Copper",63.546,2,1358,2835,8.96,0,"First metal worked by humans; a superb conductor."],
+["Zn","Zinc",65.38,2,692.7,1180,7.14,1746,"Galvanizes steel; an essential trace nutrient."],
+["Ga","Gallium",69.723,3,302.9,2477,5.91,1875,"A metal that melts in your hand."],
+["Ge","Germanium",72.630,4,1211,3106,5.32,1886,"Early semiconductor; now used in fiber optics."],
+["As","Arsenic",74.922,4,1090,887,5.78,1250,"Notorious poison with semiconductor uses; sublimes when heated."],
+["Se","Selenium",78.971,5,494,958,4.81,1817,"Light-sensitive element once used in photocopiers."],
+["Br","Bromine",79.904,6,265.8,332.0,3.12,1826,"One of only two elements liquid at room temperature."],
+["Kr","Krypton",83.798,7,115.8,119.9,0.00375,1898,"Its spectral line once defined the metre."],
+["Rb","Rubidium",85.468,0,312.5,961,1.53,1861,"So reactive it can ignite spontaneously in air."],
+["Sr","Strontium",87.62,1,1050,1655,2.64,1790,"Burns crimson in fireworks."],
+["Y","Yttrium",88.906,2,1799,3609,4.47,1794,"Used in LEDs and superconductors."],
+["Zr","Zirconium",91.224,2,2128,4682,6.52,1789,"Cladding for nuclear fuel rods."],
+["Nb","Niobium",92.906,2,2750,5017,8.57,1801,"Superconducting magnets in MRI machines."],
+["Mo","Molybdenum",95.95,2,2896,4912,10.2,1778,"Hardens steel; a vital enzyme cofactor."],
+["Tc","Technetium",97.91,2,2430,4538,11,1937,"The first artificially produced element."],
+["Ru","Ruthenium",101.07,2,2607,4423,12.1,1844,"Hardens platinum alloys; a versatile catalyst."],
+["Rh","Rhodium",102.91,2,2237,3968,12.4,1803,"Among the most expensive metals; cleans car exhaust."],
+["Pd","Palladium",106.42,2,1828,3236,12.0,1803,"Can absorb 900 times its own volume of hydrogen."],
+["Ag","Silver",107.87,2,1235,2435,10.5,0,"The best electrical conductor of any element."],
+["Cd","Cadmium",112.41,2,594.2,1040,8.69,1817,"Battery metal; a toxic heavy metal."],
+["In","Indium",114.82,3,429.8,2345,7.31,1863,"Soft metal hidden in every touchscreen coating."],
+["Sn","Tin",118.71,3,505.1,2875,7.29,0,"Bronze ingredient since antiquity."],
+["Sb","Antimony",121.76,4,903.8,1860,6.69,0,"Hardens lead; used in flame retardants."],
+["Te","Tellurium",127.60,4,722.7,1261,6.23,1782,"Rare element alloyed into solar panels."],
+["I","Iodine",126.90,6,386.9,457.4,4.93,1811,"Essential for thyroid hormones."],
+["Xe","Xenon",131.29,7,161.4,165.1,0.0059,1898,"Powers ion thrusters and camera flashes."],
+["Cs","Caesium",132.91,0,301.6,944,1.87,1860,"Its atomic vibration defines the second."],
+["Ba","Barium",137.33,1,1000,2170,3.59,1808,"Green fireworks and X-ray contrast meals."],
+["La","Lanthanum",138.91,8,1193,3737,6.15,1839,"Lighter flints and camera lenses."],
+["Ce","Cerium",140.12,8,1068,3716,6.77,1803,"The most abundant rare-earth element."],
+["Pr","Praseodymium",140.91,8,1208,3793,6.77,1885,"Colors welder-goggle glass yellow-green."],
+["Nd","Neodymium",144.24,8,1297,3347,7.01,1885,"Powers the strongest permanent magnets."],
+["Pm","Promethium",145,8,1315,3273,7.26,1945,"The only rare earth with no stable isotopes."],
+["Sm","Samarium",150.36,8,1345,2067,7.52,1879,"Magnets that keep working at high temperatures."],
+["Eu","Europium",151.96,8,1099,1802,5.24,1901,"Red glow in screens and euro banknotes."],
+["Gd","Gadolinium",157.25,8,1585,3546,7.90,1880,"MRI contrast agent and neutron absorber."],
+["Tb","Terbium",158.93,8,1629,3503,8.23,1843,"The green phosphor in displays."],
+["Dy","Dysprosium",162.50,8,1680,2840,8.55,1886,"Keeps magnets working inside hot EV motors."],
+["Ho","Holmium",164.93,8,1734,2993,8.80,1878,"Has the highest magnetic strength of any element."],
+["Er","Erbium",167.26,8,1802,3141,9.07,1842,"Amplifies signals in fiber-optic cables."],
+["Tm","Thulium",168.93,8,1818,2223,9.32,1879,"Rarest stable rare earth; portable X-ray sources."],
+["Yb","Ytterbium",173.05,8,1097,1469,6.90,1878,"A candidate for next-generation atomic clocks."],
+["Lu","Lutetium",174.97,8,1925,3675,9.84,1907,"Densest rare earth; used in PET-scan detectors."],
+["Hf","Hafnium",178.49,2,2506,4876,13.3,1923,"Nuclear control rods; chemical twin of zirconium."],
+["Ta","Tantalum",180.95,2,3290,5731,16.7,1802,"Capacitors in nearly every phone."],
+["W","Tungsten",183.84,2,3695,5828,19.3,1783,"Highest melting point of any metal."],
+["Re","Rhenium",186.21,2,3459,5869,21.0,1925,"Jet-engine superalloys; among the rarest metals."],
+["Os","Osmium",190.23,2,3306,5285,22.59,1803,"The densest naturally occurring element."],
+["Ir","Iridium",192.22,2,2719,4701,22.56,1803,"Marks the asteroid impact layer in Earth's strata."],
+["Pt","Platinum",195.08,2,2041,4098,21.5,1735,"Catalytic converters and fine jewelry."],
+["Au","Gold",196.97,2,1337,3129,19.3,0,"Coveted for millennia; never tarnishes."],
+["Hg","Mercury",200.59,2,234.3,629.9,13.53,0,"The only metal liquid at room temperature."],
+["Tl","Thallium",204.38,3,577,1746,11.85,1861,"Soft and toxic; once used as rat poison."],
+["Pb","Lead",207.2,3,600.6,2022,11.34,0,"Dense and soft; shields against radiation."],
+["Bi","Bismuth",208.98,3,544.6,1837,9.79,1753,"Grows iridescent rainbow staircase crystals."],
+["Po","Polonium",209,3,527,1235,9.20,1898,"Intensely radioactive; discovered by Marie Curie."],
+["At","Astatine",210,6,575,610,7,1940,"The rarest naturally occurring element on Earth."],
+["Rn","Radon",222,7,202,211.5,0.00973,1900,"Radioactive gas that seeps into basements."],
+["Fr","Francium",223,0,300,950,1.87,1939,"Vanishingly rare; its longest-lived isotope lasts 22 minutes."],
+["Ra","Radium",226,1,973,2010,5.5,1898,"Once painted glowing watch dials."],
+["Ac","Actinium",227,9,1323,3471,10,1899,"Gave the actinide series its name."],
+["Th","Thorium",232.04,9,2023,5061,11.7,1829,"A potential fuel for next-generation reactors."],
+["Pa","Protactinium",231.04,9,1841,4300,15.4,1913,"One of the rarest and costliest natural elements."],
+["U","Uranium",238.03,9,1405,4404,19.1,1789,"Fuel of nuclear power and weapons."],
+["Np","Neptunium",237,9,917,4273,20.5,1940,"The first transuranium element."],
+["Pu","Plutonium",244,9,912.5,3501,19.8,1940,"Powers deep-space probes and warheads."],
+["Am","Americium",243,9,1449,2880,13.7,1944,"Found in household smoke detectors."],
+["Cm","Curium",247,9,1613,3383,13.5,1944,"Named for Marie and Pierre Curie."],
+["Bk","Berkelium",247,9,1259,2900,14.8,1949,"Named for Berkeley, California."],
+["Cf","Californium",251,9,1173,1743,15.1,1950,"Neutron source used to start nuclear reactors."],
+["Es","Einsteinium",252,9,1133,1269,8.84,1952,"Discovered in hydrogen-bomb debris."],
+["Fm","Fermium",257,9,1800,0,0,1952,"Heaviest element that can form by neutron capture."],
+["Md","Mendelevium",258,9,1100,0,0,1955,"Named for Dmitri Mendeleev."],
+["No","Nobelium",259,9,1100,0,0,1966,"Named for Alfred Nobel."],
+["Lr","Lawrencium",266,9,1900,0,0,1961,"Closes out the actinide series."],
+["Rf","Rutherfordium",267,2,2400,5800,23,1964,"The first superheavy element."],
+["Db","Dubnium",268,2,0,0,0,1970,"Named for Dubna, Russia."],
+["Sg","Seaborgium",269,2,0,0,0,1974,"Named for Glenn Seaborg during his lifetime."],
+["Bh","Bohrium",270,2,0,0,0,1981,"Named for Niels Bohr."],
+["Hs","Hassium",277,2,0,0,0,1984,"Named for the German state of Hesse."],
+["Mt","Meitnerium",278,10,0,0,0,1982,"Named for physicist Lise Meitner."],
+["Ds","Darmstadtium",281,10,0,0,0,1994,"Named for Darmstadt, Germany."],
+["Rg","Roentgenium",282,10,0,0,0,1994,"Named for Wilhelm Röntgen."],
+["Cn","Copernicium",285,2,0,0,0,1996,"Named for Nicolaus Copernicus."],
+["Nh","Nihonium",286,3,0,0,0,2004,"The first element discovered in Asia."],
+["Fl","Flerovium",289,3,0,0,0,1999,"Named for the Flerov Laboratory."],
+["Mc","Moscovium",290,3,0,0,0,2003,"Named for Moscow Oblast."],
+["Lv","Livermorium",293,3,0,0,0,2000,"Named for Livermore Laboratory."],
+["Ts","Tennessine",294,10,0,0,0,2010,"Named for Tennessee; among the newest elements."],
+["Og","Oganesson",294,10,0,0,0,2002,"The heaviest known element."]
+];
+
+/* ============ ELECTRON STRUCTURE ============ */
+const ORDER=['1s','2s','2p','3s','3p','4s','3d','4p','5s','4d','5p','6s','4f','5d','6p','7s','5f','6d','7p'];
+const CAP={s:2,p:6,d:10,f:14};
+const EXC={24:{'3d':5,'4s':1},29:{'3d':10,'4s':1},41:{'4d':4,'5s':1},42:{'4d':5,'5s':1},
+ 44:{'4d':7,'5s':1},45:{'4d':8,'5s':1},46:{'4d':10,'5s':0},47:{'4d':10,'5s':1},
+ 57:{'4f':0,'5d':1},58:{'4f':1,'5d':1},64:{'4f':7,'5d':1},78:{'4f':14,'5d':9,'6s':1},
+ 79:{'5d':10,'6s':1},89:{'5f':0,'6d':1},90:{'5f':0,'6d':2},91:{'5f':2,'6d':1},
+ 92:{'5f':3,'6d':1},93:{'5f':4,'6d':1},96:{'5f':7,'6d':1},103:{'5f':14,'6d':0,'7p':1}};
+const NOBLE=[[86,'Rn'],[54,'Xe'],[36,'Kr'],[18,'Ar'],[10,'Ne'],[2,'He']];
+const LSORT={s:0,p:1,d:2,f:3};
+
+function subshells(z){
+  const m={}; let left=z;
+  for(const o of ORDER){ if(left<=0)break;
+    const take=Math.min(left,CAP[o[1]]); m[o]=take; left-=take; }
+  if(EXC[z]) for(const k in EXC[z]){ m[k]=EXC[z][k]; if(m[k]===0)delete m[k]; }
+  return m;
+}
+function shellsOf(z){
+  const m=subshells(z), sh=[0,0,0,0,0,0,0];
+  for(const k in m) sh[+k[0]-1]+=m[k];
+  while(sh.length&&!sh[sh.length-1])sh.pop();
+  return sh;
+}
+function configOf(z){
+  const m=subshells(z);
+  let core=null;
+  for(const[nz,sym]of NOBLE){ if(z>nz){core=[nz,sym];break;} }
+  let rest={...m};
+  if(core){ const cm=subshells(core[0]); for(const k in cm){
+    if(rest[k]===cm[k])delete rest[k]; else if(rest[k]!=null)rest[k]-=0; } }
+  const keys=Object.keys(rest).sort((a,b)=>(+a[0]-+b[0])||(LSORT[a[1]]-LSORT[b[1]]));
+  const parts=keys.map(k=>k+'\u00b7'+rest[k]);
+  return (core?'['+core[1]+'] ':'')+parts.map(k=>{
+    const i=k.indexOf('\u00b7'); return k.slice(0,i)+'<sup>'+k.slice(i+1)+'</sup>';
+  }).join(' ');
+}
+function posOf(z){
+  if(z>=57&&z<=71) return {r:9,c:z-53};
+  if(z>=89&&z<=103) return {r:10,c:z-85};
+  if(z===1) return {r:1,c:1};
+  if(z===2) return {r:1,c:18};
+  const starts=[3,11,19,37,55,87];
+  let p=2; for(let i=1;i<starts.length;i++){ if(z>=starts[i])p=i+2; }
+  const i=z-starts[p-2];
+  if(p<=3) return {r:p,c:i<2?i+1:i+11};
+  if(p<=5) return {r:p,c:i+1};
+  if(p===6) return {r:6,c:z<=56?z-54:z-68};
+  return {r:7,c:z<=88?z-86:z-100};
+}
+function blockOf(z){
+  if((z>=57&&z<=70)||(z>=89&&z<=102)) return 'f';
+  const c=posOf(z).c;
+  if(c<=2||z===2) return 's';
+  if(c>=13) return 'p';
+  return 'd';
+}
+function groupOf(z){
+  if((z>=57&&z<=71)||(z>=89&&z<=103)) return '\u2014';
+  return posOf(z).c;
+}
+function periodOf(z){
+  if(z>=57&&z<=71)return 6; if(z>=89&&z<=103)return 7;
+  return posOf(z).r;
+}
+function phaseOf(el){
+  const[,,,,melt,boil]=el;
+  if(!melt)return 'Unknown';
+  const T=293;
+  if(T<melt)return 'Solid';
+  if(boil&&T<boil)return 'Liquid';
+  return boil?'Gas':'Solid';
+}
+const fmtK=k=>k?`${k} K (${Math.round(k-273.15)} °C)`:'\u2014';
+const fmtD=d=>!d?'\u2014':(d<0.05?(d*1000).toPrecision(3)+' g/L':d+' g/cm³');
+const fmtY=y=>y?y:'Antiquity';
+const catColor=c=>getComputedStyle(document.documentElement).getPropertyValue(CATS[c][1]).trim();
+
+
+/* ============ I18N ============ */
+const I18N={
+en:{
+ title:`<span class="el-chip" style="--c:var(--nonmetal)">P<span class="chipnum">15</span></span>eriodic&nbsp;<span class="el-chip" style="--c:var(--transition)">Ta<span class="chipnum">73</span></span>ble`,
+ eyebrow:"118 elements · click to explore · 3D Bohr models",
+ sub:"Every element, from hydrogen to oganesson. Select any tile to see its properties, electron structure, and an interactive 3D atomic model you can spin with your pointer.",
+ search:"Search name / symbol / number",
+ cats:["Alkali metal","Alkaline earth","Transition metal","Post-transition","Metalloid","Nonmetal","Halogen","Noble gas","Lanthanide","Actinide","Unknown"],
+ series:["lanthanides","actinides"],
+ labels:["Atomic mass","Phase at 20 °C","Electron configuration","Block","Group / Period","Melting point","Boiling point","Density","Discovered"],
+ phases:["Solid","Liquid","Gas","Unknown"],
+ antiquity:"Antiquity", zLabel:"atomic number", shellsWord:"shells",
+ drag:"drag to rotate", spectral:"Spectral signature (stylized)",
+ prev:"← prev", next:"next →", blockTpl:"{b}-block",
+ names:null, facts:null},
+
+zh:{
+ title:"元素周期表",
+ eyebrow:"118 种元素 · 点击探索 · 3D 玻尔模型",
+ sub:"从氢到鿫的全部元素。点击任意方格，查看其性质、电子结构，以及可用指针旋转的交互式 3D 原子模型。",
+ search:"搜索名称 / 符号 / 序数",
+ cats:["碱金属","碱土金属","过渡金属","后过渡金属","类金属","非金属","卤素","稀有气体","镧系","锕系","未知"],
+ series:["镧系","锕系"],
+ labels:["原子量","20 °C 时的状态","电子排布","区","族 / 周期","熔点","沸点","密度","发现年代"],
+ phases:["固态","液态","气态","未知"],
+ antiquity:"远古", zLabel:"原子序数", shellsWord:"电子层",
+ drag:"拖动旋转", spectral:"光谱特征（艺术化）",
+ prev:"← 上一个", next:"下一个 →", blockTpl:"{b} 区",
+ names:"氢 氦 锂 铍 硼 碳 氮 氧 氟 氖 钠 镁 铝 硅 磷 硫 氯 氩 钾 钙 钪 钛 钒 铬 锰 铁 钴 镍 铜 锌 镓 锗 砷 硒 溴 氪 铷 锶 钇 锆 铌 钼 锝 钌 铑 钯 银 镉 铟 锡 锑 碲 碘 氙 铯 钡 镧 铈 镨 钕 钷 钐 铕 钆 铽 镝 钬 铒 铥 镱 镥 铪 钽 钨 铼 锇 铱 铂 金 汞 铊 铅 铋 钋 砹 氡 钫 镭 锕 钍 镤 铀 镎 钚 镅 锔 锫 锎 锿 镄 钔 锘 铹 𬬻 𬭊 𬭳 𬭛 𬭶 鿏 𫟼 𬬭 鿔 鿭 𫓧 镆 𫟷 鿬 鿫".split(" "),
+ facts:["最轻的元素，恒星核聚变的燃料。","惰性气体，先在太阳光谱中被发现。","最轻的金属，驱动可充电电池。","坚硬轻质的金属，用于航天和 X 射线窗口。","植物生长必需，用于玻璃和磁体。","一切已知生命的骨架。","占地球大气的 78%。","支持燃烧与呼吸。","反应性和电负性最强的元素。","在放电灯管中发出橙红色光。","质软的金属，遇水剧烈反应。","燃烧时发出耀眼的白光。","地壳中含量最高的金属。","现代电子工业的核心。","可在黑暗中发光，DNA 和骨骼必需。","自古被称为「硫磺」的黄色元素。","为全球饮用水消毒。","约占空气的 1%，惰性保护气体。","神经信号必需，遇水剧烈反应。","构成骨骼、牙齿、贝壳和石灰岩。","强化铝合金的轻金属。","强度堪比钢，重量近乎减半。","使工具钢和弹簧更坚硬。","赋予不锈钢光泽。","强化钢材，光合作用的关键。","用量最大的金属，构成地核。","古老的蓝色颜料，维生素 B12 的核心。","抗腐蚀，见于硬币和陨石。","人类最早使用的金属之一，优良导体。","用于镀锌钢板，人体必需微量元素。","在手心即可熔化的金属。","早期半导体，现用于光纤。","著名毒物，亦有半导体用途；受热升华。","光敏元素，曾用于复印机。","室温下仅有的两种液态元素之一。","其谱线曾定义「米」。","活泼到可在空气中自燃。","在烟花中燃出深红色。","用于 LED 和超导体。","核燃料棒的包壳材料。","MRI 超导磁体的材料。","强化钢材，重要的酶辅因子。","第一个人工合成的元素。","强化铂合金，多用途催化剂。","最昂贵的金属之一，净化汽车尾气。","可吸收自身体积 900 倍的氢气。","所有元素中导电性最佳。","电池金属，有毒重金属。","触摸屏镀膜中的软金属。","自古用于青铜的成分。","使铅更坚硬，用于阻燃剂。","稀有元素，用于太阳能电池板。","甲状腺激素必需。","驱动离子推进器和闪光灯。","其原子振动定义「秒」。","绿色烟花与 X 射线造影剂。","打火石与相机镜头的材料。","含量最高的稀土元素。","使焊工护目镜呈黄绿色。","最强永磁体的核心。","唯一没有稳定同位素的稀土。","耐高温的磁体材料。","屏幕与欧元纸币中的红色荧光。","MRI 造影剂与中子吸收剂。","显示屏中的绿色荧光粉。","让电动车电机磁体耐受高温。","磁性最强的元素。","放大光纤中的信号。","最稀有的稳定稀土，便携 X 射线源。","下一代原子钟的候选。","最致密的稀土，用于 PET 探测器。","核反应堆控制棒，锆的化学孪生兄弟。","几乎每部手机中的电容器。","熔点最高的金属。","喷气发动机高温合金，最稀有的金属之一。","天然密度最大的元素。","标记地层中的小行星撞击层。","催化转化器与高级珠宝。","千百年来备受珍视，永不失去光泽。","室温下唯一的液态金属。","质软有毒，曾用作灭鼠药。","致密柔软，可屏蔽辐射。","能长出彩虹色阶梯状晶体。","强放射性，由居里夫人发现。","地球上最稀有的天然元素。","会渗入地下室的放射性气体。","极其稀有，最长寿的同位素仅存在 22 分钟。","曾用于绘制夜光表盘。","锕系元素因它得名。","下一代反应堆的潜在燃料。","最稀有、最昂贵的天然元素之一。","核电与核武器的燃料。","第一个超铀元素。","为深空探测器和弹头提供能量。","见于家用烟雾报警器。","以居里夫妇命名。","以加州伯克利命名。","用于启动核反应堆的中子源。","在氢弹残骸中被发现。","中子俘获所能形成的最重元素。","以门捷列夫命名。","以诺贝尔命名。","锕系元素的终点。","第一个超重元素。","以俄罗斯杜布纳命名。","西博格在世时以他命名。","以玻尔命名。","以德国黑森州命名。","以物理学家迈特纳命名。","以德国达姆施塔特命名。","以伦琴命名。","以哥白尼命名。","第一个在亚洲发现的元素。","以弗廖罗夫实验室命名。","以莫斯科州命名。","以利弗莫尔实验室命名。","以田纳西州命名，最新的元素之一。","已知最重的元素。"]},
+
+ja:{
+ title:"周期表",
+ eyebrow:"全 118 元素 · クリックで探索 · 3D ボーアモデル",
+ sub:"水素からオガネソンまで。タイルを選ぶと、性質・電子構造・ポインターで回せるインタラクティブな 3D 原子モデルが表示されます。",
+ search:"名前 / 記号 / 番号で検索",
+ cats:["アルカリ金属","アルカリ土類金属","遷移金属","後遷移金属","半金属","非金属","ハロゲン","貴ガス","ランタノイド","アクチノイド","不明"],
+ series:["ランタノイド","アクチノイド"],
+ labels:["原子量","20 °C での状態","電子配置","ブロック","族 / 周期","融点","沸点","密度","発見"],
+ phases:["固体","液体","気体","不明"],
+ antiquity:"古代", zLabel:"原子番号", shellsWord:"電子殻",
+ drag:"ドラッグで回転", spectral:"スペクトル特性（様式化）",
+ prev:"← 前へ", next:"次へ →", blockTpl:"{b} ブロック",
+ names:"水素 ヘリウム リチウム ベリリウム ホウ素 炭素 窒素 酸素 フッ素 ネオン ナトリウム マグネシウム アルミニウム ケイ素 リン 硫黄 塩素 アルゴン カリウム カルシウム スカンジウム チタン バナジウム クロム マンガン 鉄 コバルト ニッケル 銅 亜鉛 ガリウム ゲルマニウム ヒ素 セレン 臭素 クリプトン ルビジウム ストロンチウム イットリウム ジルコニウム ニオブ モリブデン テクネチウム ルテニウム ロジウム パラジウム 銀 カドミウム インジウム スズ アンチモン テルル ヨウ素 キセノン セシウム バリウム ランタン セリウム プラセオジム ネオジム プロメチウム サマリウム ユウロピウム ガドリニウム テルビウム ジスプロシウム ホルミウム エルビウム ツリウム イッテルビウム ルテチウム ハフニウム タンタル タングステン レニウム オスミウム イリジウム 白金 金 水銀 タリウム 鉛 ビスマス ポロニウム アスタチン ラドン フランシウム ラジウム アクチニウム トリウム プロトアクチニウム ウラン ネプツニウム プルトニウム アメリシウム キュリウム バークリウム カリホルニウム アインスタイニウム フェルミウム メンデレビウム ノーベリウム ローレンシウム ラザホージウム ドブニウム シーボーギウム ボーリウム ハッシウム マイトネリウム ダームスタチウム レントゲニウム コペルニシウム ニホニウム フレロビウム モスコビウム リバモリウム テネシン オガネソン".split(" "),
+ facts:["最も軽い元素。恒星の核融合の燃料。","太陽光から先に発見された不活性ガス。","最も軽い金属。充電池を動かす。","航空宇宙や X 線窓に使われる硬く軽い金属。","植物の生育に必須。ガラスや磁石に使用。","あらゆる既知の生命の骨格。","地球大気の 78% を占める。","燃焼と呼吸を支える。","最も反応性・電気陰性度が高い元素。","放電管で橙赤色に光る。","水と激しく反応する柔らかい金属。","まばゆい白光を放って燃える。","地殻で最も豊富な金属。","現代エレクトロニクスの心臓部。","暗闇で光る。DNA と骨に不可欠。","古来「硫黄」として知られる黄色の元素。","世界中の飲料水を消毒する。","空気の約 1%。不活性シールドガス。","神経伝達に必須。水と激しく反応。","骨・歯・貝殻・石灰岩をつくる。","アルミ合金を強化する軽金属。","鋼並みの強度でほぼ半分の重さ。","工具鋼やばねを硬くする。","ステンレス鋼に輝きを与える。","鋼を強化。光合成の鍵。","最も使われる金属。地球の核を成す。","古来の青色顔料。ビタミン B12 の核。","耐食性。硬貨や隕石に含まれる。","人類最初期の金属。優れた導体。","鋼の亜鉛めっきに。必須微量元素。","手のひらで溶ける金属。","初期の半導体。現在は光ファイバーに。","半導体用途もある有名な毒。加熱で昇華。","感光性。かつて複写機に使用。","室温で液体のわずか 2 元素のうちの一つ。","そのスペクトル線がかつてメートルを定義。","空気中で自然発火するほど反応性が高い。","花火で深紅に燃える。","LED や超伝導体に使用。","核燃料棒の被覆材。","MRI の超伝導磁石に。","鋼を硬化。重要な酵素補因子。","初の人工合成元素。","白金合金を硬化。多用途触媒。","最も高価な金属の一つ。排ガスを浄化。","自身の 900 倍の体積の水素を吸収。","全元素中で最高の電気伝導率。","電池金属。有毒な重金属。","タッチパネルの被膜に潜む軟らかい金属。","古来、青銅の成分。","鉛を硬化。難燃剤に使用。","希少。太陽電池パネルの合金に。","甲状腺ホルモンに必須。","イオンエンジンやフラッシュを駆動。","その原子振動が「秒」を定義。","緑の花火と X 線造影剤。","ライター石やカメラレンズに。","最も豊富な希土類元素。","溶接ゴーグルを黄緑色に着色。","最強の永久磁石の源。","安定同位体を持たない唯一の希土類。","高温でも働く磁石に。","画面やユーロ紙幣の赤い蛍光。","MRI 造影剤・中性子吸収材。","ディスプレイの緑色蛍光体。","EV モーターの磁石を高温に強く。","全元素中で最も強い磁性。","光ファイバーの信号を増幅。","最も希少な安定希土類。携帯 X 線源。","次世代原子時計の候補。","最も高密度の希土類。PET 検出器に。","制御棒に使用。ジルコニウムの化学的双子。","ほぼ全てのスマホのコンデンサに。","金属中で最高の融点。","ジェットエンジン超合金。最も希少な金属の一つ。","天然で最も高密度の元素。","地層中の小惑星衝突層の指標。","触媒コンバーターと宝飾品。","数千年来珍重され、決して曇らない。","室温で液体の唯一の金属。","軟らかく有毒。かつて殺鼠剤に。","高密度で軟らかい。放射線を遮蔽。","虹色の階段状結晶を成長させる。","強い放射能。キュリー夫人が発見。","地球上で最も希少な天然元素。","地下室に染み込む放射性ガス。","極めて希少。最長寿命の同位体は 22 分。","かつて夜光時計の文字盤に。","アクチノイドの名の由来。","次世代原子炉の潜在的燃料。","最も希少で高価な天然元素の一つ。","原子力と核兵器の燃料。","最初の超ウラン元素。","宇宙探査機と弾頭の動力。","家庭用煙探知器に使用。","キュリー夫妻にちなみ命名。","カリフォルニア州バークレーにちなむ。","原子炉起動用の中性子源。","水爆の残骸から発見。","中性子捕獲で生成できる最も重い元素。","メンデレーエフにちなむ。","ノーベルにちなむ。","アクチノイド系列の最後。","最初の超重元素。","ロシアのドゥブナにちなむ。","シーボーグの存命中に命名。","ニールス・ボーアにちなむ。","ドイツのヘッセン州にちなむ。","物理学者マイトナーにちなむ。","ドイツのダルムシュタットにちなむ。","レントゲンにちなむ。","コペルニクスにちなむ。","アジアで初めて発見された元素。","フリョロフ研究所にちなむ。","モスクワ州にちなむ。","リバモア研究所にちなむ。","テネシー州にちなむ。最も新しい元素の一つ。","既知の最も重い元素。"]},
+
+ko:{
+ title:"주기율표",
+ eyebrow:"118개 원소 · 클릭하여 탐색 · 3D 보어 모형",
+ sub:"수소부터 오가네손까지. 타일을 선택하면 성질, 전자 구조, 포인터로 돌릴 수 있는 인터랙티브 3D 원자 모형을 볼 수 있습니다.",
+ search:"이름 / 기호 / 번호 검색",
+ cats:["알칼리 금속","알칼리 토금속","전이 금속","전이후 금속","준금속","비금속","할로젠","비활성 기체","란타넘족","악티늄족","미상"],
+ series:["란타넘족","악티늄족"],
+ labels:["원자량","20 °C에서의 상태","전자 배치","구역","족 / 주기","녹는점","끓는점","밀도","발견"],
+ phases:["고체","액체","기체","미상"],
+ antiquity:"고대", zLabel:"원자 번호", shellsWord:"전자 껍질",
+ drag:"드래그하여 회전", spectral:"스펙트럼 특성 (양식화)",
+ prev:"← 이전", next:"다음 →", blockTpl:"{b} 구역",
+ names:"수소 헬륨 리튬 베릴륨 붕소 탄소 질소 산소 플루오린 네온 나트륨 마그네슘 알루미늄 규소 인 황 염소 아르곤 칼륨 칼슘 스칸듐 타이타늄 바나듐 크로뮴 망가니즈 철 코발트 니켈 구리 아연 갈륨 저마늄 비소 셀레늄 브로민 크립톤 루비듐 스트론튬 이트륨 지르코늄 나이오븀 몰리브데넘 테크네튬 루테늄 로듐 팔라듐 은 카드뮴 인듐 주석 안티모니 텔루륨 아이오딘 제논 세슘 바륨 란타넘 세륨 프라세오디뮴 네오디뮴 프로메튬 사마륨 유로퓸 가돌리늄 터븀 디스프로슘 홀뮴 어븀 툴륨 이터븀 루테튬 하프늄 탄탈럼 텅스텐 레늄 오스뮴 이리듐 백금 금 수은 탈륨 납 비스무트 폴로늄 아스타틴 라돈 프랑슘 라듐 악티늄 토륨 프로트악티늄 우라늄 넵투늄 플루토늄 아메리슘 퀴륨 버클륨 캘리포늄 아인슈타이늄 페르뮴 멘델레븀 노벨륨 로렌슘 러더포듐 더브늄 시보귬 보륨 하슘 마이트너륨 다름슈타튬 뢴트게늄 코페르니슘 니호늄 플레로븀 모스코븀 리버모륨 테네신 오가네손".split(" "),
+ facts:["가장 가벼운 원소. 별의 핵융합 연료.","태양빛에서 먼저 발견된 비활성 기체.","가장 가벼운 금속. 충전지를 움직인다.","항공우주와 X선 창에 쓰이는 단단하고 가벼운 금속.","식물 생장에 필수. 유리와 자석에 사용.","모든 알려진 생명의 뼈대.","지구 대기의 78%를 차지.","연소와 호흡을 지탱한다.","가장 반응성이 크고 전기음성도가 높은 원소.","방전관에서 주황빛으로 빛난다.","물과 격렬히 반응하는 무른 금속.","눈부신 흰빛을 내며 탄다.","지각에서 가장 풍부한 금속.","현대 전자공학의 심장.","어둠 속에서 빛난다. DNA와 뼈에 필수.","예로부터 '유황'으로 알려진 노란 원소.","전 세계 식수를 소독한다.","공기의 약 1%. 비활성 보호 기체.","신경 신호에 필수. 물과 격렬히 반응.","뼈·치아·조개껍데기·석회암을 만든다.","알루미늄 합금을 강화하는 경금속.","강철만큼 강하고 무게는 거의 절반.","공구강과 스프링을 단단하게 한다.","스테인리스강에 광택을 준다.","강철을 강화. 광합성의 핵심.","가장 많이 쓰이는 금속. 지구의 핵을 이룬다.","오래된 파란 안료. 비타민 B12의 핵심.","부식에 강하다. 동전과 운석에서 발견.","인류 최초의 금속 중 하나. 뛰어난 도체.","강철 도금에 사용. 필수 미량 영양소.","손바닥에서 녹는 금속.","초기 반도체. 지금은 광섬유에.","반도체 용도도 있는 유명한 독. 가열하면 승화.","감광성. 한때 복사기에 사용.","상온에서 액체인 단 두 원소 중 하나.","그 스펙트럼선이 한때 미터를 정의.","공기 중에서 자연 발화할 만큼 반응성이 크다.","불꽃놀이에서 진홍색으로 탄다.","LED와 초전도체에 사용.","핵연료봉의 피복재.","MRI 초전도 자석에 사용.","강철을 단단하게. 중요한 효소 보조인자.","최초의 인공 합성 원소.","백금 합금을 강화. 다용도 촉매.","가장 비싼 금속 중 하나. 배기가스를 정화.","자기 부피의 900배의 수소를 흡수.","모든 원소 중 최고의 전기 전도율.","전지 금속. 유독한 중금속.","터치스크린 코팅 속의 무른 금속.","예로부터 청동의 성분.","납을 단단하게. 난연제에 사용.","희귀 원소. 태양전지판 합금에.","갑상샘 호르몬에 필수.","이온 추진기와 플래시를 구동.","그 원자 진동이 '초'를 정의.","초록 불꽃놀이와 X선 조영제.","라이터 돌과 카메라 렌즈에.","가장 풍부한 희토류 원소.","용접 고글을 황록색으로 물들인다.","가장 강한 영구자석의 원천.","안정 동위원소가 없는 유일한 희토류.","고온에서도 작동하는 자석에.","화면과 유로 지폐의 붉은 형광.","MRI 조영제·중성자 흡수재.","디스플레이의 녹색 형광체.","전기차 모터 자석을 고온에 강하게.","모든 원소 중 가장 강한 자성.","광섬유 신호를 증폭.","가장 희귀한 안정 희토류. 휴대용 X선원.","차세대 원자시계 후보.","가장 조밀한 희토류. PET 검출기에.","제어봉에 사용. 지르코늄의 화학적 쌍둥이.","거의 모든 휴대폰의 커패시터에.","금속 중 가장 높은 녹는점.","제트엔진 초합금. 가장 희귀한 금속 중 하나.","천연에서 가장 밀도가 높은 원소.","지층 속 소행성 충돌층의 지표.","촉매 변환기와 고급 보석.","수천 년간 귀히 여겨졌고 변색되지 않는다.","상온에서 액체인 유일한 금속.","무르고 유독. 한때 쥐약으로 사용.","조밀하고 무르다. 방사선을 차폐.","무지갯빛 계단 결정을 키운다.","강한 방사능. 마리 퀴리가 발견.","지구에서 가장 희귀한 천연 원소.","지하실로 스며드는 방사성 기체.","극히 희귀. 최장수명 동위원소가 22분.","한때 야광 시계판에 칠해졌다.","악티늄족 이름의 유래.","차세대 원자로의 잠재적 연료.","가장 희귀하고 비싼 천연 원소 중 하나.","원자력과 핵무기의 연료.","최초의 초우라늄 원소.","심우주 탐사선과 탄두의 동력.","가정용 연기 감지기에 사용.","퀴리 부부의 이름을 땄다.","캘리포니아 버클리의 이름을 땄다.","원자로 기동용 중성자원.","수소폭탄 잔해에서 발견.","중성자 포획으로 만들 수 있는 가장 무거운 원소.","멘델레예프의 이름을 땄다.","노벨의 이름을 땄다.","악티늄족의 마지막.","최초의 초중원소.","러시아 두브나의 이름을 땄다.","시보그 생전에 그의 이름을 땄다.","닐스 보어의 이름을 땄다.","독일 헤센주의 이름을 땄다.","물리학자 마이트너의 이름을 땄다.","독일 다름슈타트의 이름을 땄다.","뢴트겐의 이름을 땄다.","코페르니쿠스의 이름을 땄다.","아시아에서 처음 발견된 원소.","플료로프 연구소의 이름을 땄다.","모스크바주의 이름을 땄다.","리버모어 연구소의 이름을 땄다.","테네시주의 이름을 땄다. 가장 새로운 원소 중 하나.","알려진 가장 무거운 원소."]},
+
+fr:{
+ title:`<span class="el-chip" style="--c:var(--transition)">Ta<span class="chipnum">73</span></span>bleau périodique`,
+ eyebrow:"118 éléments · cliquez pour explorer · modèles de Bohr 3D",
+ sub:"Tous les éléments, de l'hydrogène à l'oganesson. Sélectionnez une case pour voir ses propriétés, sa structure électronique et un modèle atomique 3D interactif à faire pivoter.",
+ search:"Nom / symbole / numéro",
+ cats:["Métaux alcalins","Alcalino-terreux","Métaux de transition","Métaux pauvres","Métalloïdes","Non-métaux","Halogènes","Gaz nobles","Lanthanides","Actinides","Inconnu"],
+ series:["lanthanides","actinides"],
+ labels:["Masse atomique","État à 20 °C","Configuration électronique","Bloc","Groupe / Période","Point de fusion","Point d'ébullition","Masse volumique","Découverte"],
+ phases:["Solide","Liquide","Gaz","Inconnu"],
+ antiquity:"Antiquité", zLabel:"numéro atomique", shellsWord:"couches",
+ drag:"glisser pour pivoter", spectral:"Signature spectrale (stylisée)",
+ prev:"← préc.", next:"suiv. →", blockTpl:"bloc {b}",
+ names:"Hydrogène Hélium Lithium Béryllium Bore Carbone Azote Oxygène Fluor Néon Sodium Magnésium Aluminium Silicium Phosphore Soufre Chlore Argon Potassium Calcium Scandium Titane Vanadium Chrome Manganèse Fer Cobalt Nickel Cuivre Zinc Gallium Germanium Arsenic Sélénium Brome Krypton Rubidium Strontium Yttrium Zirconium Niobium Molybdène Technétium Ruthénium Rhodium Palladium Argent Cadmium Indium Étain Antimoine Tellure Iode Xénon Césium Baryum Lanthane Cérium Praséodyme Néodyme Prométhium Samarium Europium Gadolinium Terbium Dysprosium Holmium Erbium Thulium Ytterbium Lutécium Hafnium Tantale Tungstène Rhénium Osmium Iridium Platine Or Mercure Thallium Plomb Bismuth Polonium Astate Radon Francium Radium Actinium Thorium Protactinium Uranium Neptunium Plutonium Américium Curium Berkélium Californium Einsteinium Fermium Mendélévium Nobélium Lawrencium Rutherfordium Dubnium Seaborgium Bohrium Hassium Meitnérium Darmstadtium Roentgenium Copernicium Nihonium Flérovium Moscovium Livermorium Tennesse Oganesson".split(" "),
+ facts:["L'élément le plus léger ; carburant des étoiles.","Gaz inerte détecté d'abord dans la lumière solaire.","Le métal le plus léger ; alimente les batteries rechargeables.","Métal rigide et léger pour l'aérospatiale et les fenêtres à rayons X.","Essentiel aux plantes ; utilisé dans le verre et les aimants.","L'ossature de toute vie connue.","Constitue 78 % de l'atmosphère terrestre.","Entretient la combustion et la respiration.","L'élément le plus réactif et le plus électronégatif.","Brille en rouge orangé dans les enseignes.","Métal mou réagissant violemment avec l'eau.","Brûle avec une lumière blanche éclatante.","Le métal le plus abondant de la croûte terrestre.","Le cœur de l'électronique moderne.","Luit dans le noir ; vital pour l'ADN et les os.","Élément jaune connu depuis l'Antiquité.","Désinfecte l'eau potable dans le monde entier.","Environ 1 % de l'air ; gaz protecteur inerte.","Essentiel aux signaux nerveux ; réagit vivement avec l'eau.","Bâtit os, dents, coquilles et calcaire.","Métal léger qui renforce les alliages d'aluminium.","Aussi solide que l'acier pour près de la moitié du poids.","Durcit l'acier des outils et des ressorts.","Donne son éclat à l'acier inoxydable.","Renforce l'acier ; clé de la photosynthèse.","Le métal le plus utilisé ; forme le noyau de la planète.","Pigment bleu ancien ; cœur de la vitamine B12.","Résiste à la corrosion ; présent dans pièces et météorites.","Premier métal travaillé par l'homme ; excellent conducteur.","Galvanise l'acier ; oligo-élément essentiel.","Un métal qui fond dans la main.","Semi-conducteur des débuts ; aujourd'hui dans la fibre optique.","Poison célèbre aux usages semi-conducteurs ; se sublime.","Photosensible ; jadis dans les photocopieurs.","L'un des deux seuls éléments liquides à température ambiante.","Sa raie spectrale a jadis défini le mètre.","Si réactif qu'il s'enflamme à l'air.","Brûle en pourpre dans les feux d'artifice.","Utilisé dans les LED et les supraconducteurs.","Gainage des barres de combustible nucléaire.","Aimants supraconducteurs des IRM.","Durcit l'acier ; cofacteur enzymatique vital.","Premier élément produit artificiellement.","Durcit les alliages de platine ; catalyseur polyvalent.","Parmi les métaux les plus chers ; épure les gaz d'échappement.","Absorbe 900 fois son volume d'hydrogène.","Le meilleur conducteur électrique de tous les éléments.","Métal des batteries ; métal lourd toxique.","Métal mou caché dans chaque écran tactile.","Ingrédient du bronze depuis l'Antiquité.","Durcit le plomb ; utilisé dans les retardateurs de flamme.","Rare ; allié dans les panneaux solaires.","Essentiel aux hormones thyroïdiennes.","Propulse les moteurs ioniques et les flashs.","Sa vibration atomique définit la seconde.","Feux d'artifice verts et repas barytés.","Pierres à briquet et objectifs photo.","La terre rare la plus abondante.","Colore en vert-jaune les lunettes de soudeur.","Source des aimants permanents les plus puissants.","Seule terre rare sans isotope stable.","Des aimants qui résistent aux hautes températures.","Lueur rouge des écrans et des billets en euros.","Agent de contraste IRM ; absorbeur de neutrons.","Le luminophore vert des écrans.","Garde les aimants efficaces dans les moteurs électriques chauds.","La plus forte aimantation de tous les éléments.","Amplifie les signaux des fibres optiques.","La terre rare stable la plus rare ; sources X portables.","Candidat aux horloges atomiques de demain.","La terre rare la plus dense ; détecteurs TEP.","Barres de contrôle ; jumeau chimique du zirconium.","Des condensateurs dans presque chaque téléphone.","Le point de fusion le plus élevé de tous les métaux.","Superalliages de réacteurs ; parmi les métaux les plus rares.","L'élément naturel le plus dense.","Marque la couche d'impact d'astéroïde dans les strates.","Pots catalytiques et haute joaillerie.","Convoité depuis des millénaires ; ne ternit jamais.","Le seul métal liquide à température ambiante.","Mou et toxique ; jadis mort-aux-rats.","Dense et mou ; protège des radiations.","Forme des cristaux irisés en escalier.","Intensément radioactif ; découvert par Marie Curie.","L'élément naturel le plus rare sur Terre.","Gaz radioactif qui s'infiltre dans les sous-sols.","Extrêmement rare ; son isotope le plus stable vit 22 minutes.","Peignait jadis les cadrans lumineux.","A donné son nom aux actinides.","Carburant potentiel des réacteurs de demain.","L'un des éléments naturels les plus rares et coûteux.","Carburant du nucléaire civil et militaire.","Premier élément transuranien.","Alimente sondes spatiales et ogives.","Présent dans les détecteurs de fumée.","Nommé en l'honneur de Marie et Pierre Curie.","Nommé d'après Berkeley, en Californie.","Source de neutrons pour démarrer les réacteurs.","Découvert dans les débris d'une bombe H.","L'élément le plus lourd formé par capture de neutrons.","Nommé d'après Mendeleïev.","Nommé d'après Alfred Nobel.","Clôt la série des actinides.","Le premier élément superlourd.","Nommé d'après Doubna, en Russie.","Nommé d'après Glenn Seaborg de son vivant.","Nommé d'après Niels Bohr.","Nommé d'après la Hesse, en Allemagne.","Nommé d'après la physicienne Lise Meitner.","Nommé d'après Darmstadt, en Allemagne.","Nommé d'après Wilhelm Röntgen.","Nommé d'après Copernic.","Premier élément découvert en Asie.","Nommé d'après le laboratoire Flerov.","Nommé d'après l'oblast de Moscou.","Nommé d'après le laboratoire de Livermore.","Nommé d'après le Tennessee ; parmi les plus récents.","L'élément le plus lourd connu."]},
+
+de:{
+ title:`<span class="el-chip" style="--c:var(--nonmetal)">P<span class="chipnum">15</span></span>eriodensystem`,
+ eyebrow:"118 Elemente · zum Erkunden klicken · 3D-Bohr-Modelle",
+ sub:"Alle Elemente von Wasserstoff bis Oganesson. Wähle eine Kachel für Eigenschaften, Elektronenstruktur und ein interaktives, drehbares 3D-Atommodell.",
+ search:"Name / Symbol / Nummer",
+ cats:["Alkalimetalle","Erdalkalimetalle","Übergangsmetalle","Metalle (p-Block)","Halbmetalle","Nichtmetalle","Halogene","Edelgase","Lanthanoide","Actinoide","Unbekannt"],
+ series:["Lanthanoide","Actinoide"],
+ labels:["Atommasse","Zustand bei 20 °C","Elektronenkonfiguration","Block","Gruppe / Periode","Schmelzpunkt","Siedepunkt","Dichte","Entdeckt"],
+ phases:["Fest","Flüssig","Gasförmig","Unbekannt"],
+ antiquity:"Antike", zLabel:"Ordnungszahl", shellsWord:"Schalen",
+ drag:"Ziehen zum Drehen", spectral:"Spektralsignatur (stilisiert)",
+ prev:"← zurück", next:"weiter →", blockTpl:"{b}-Block",
+ names:"Wasserstoff Helium Lithium Beryllium Bor Kohlenstoff Stickstoff Sauerstoff Fluor Neon Natrium Magnesium Aluminium Silicium Phosphor Schwefel Chlor Argon Kalium Calcium Scandium Titan Vanadium Chrom Mangan Eisen Cobalt Nickel Kupfer Zink Gallium Germanium Arsen Selen Brom Krypton Rubidium Strontium Yttrium Zirconium Niob Molybdän Technetium Ruthenium Rhodium Palladium Silber Cadmium Indium Zinn Antimon Tellur Iod Xenon Caesium Barium Lanthan Cer Praseodym Neodym Promethium Samarium Europium Gadolinium Terbium Dysprosium Holmium Erbium Thulium Ytterbium Lutetium Hafnium Tantal Wolfram Rhenium Osmium Iridium Platin Gold Quecksilber Thallium Blei Bismut Polonium Astat Radon Francium Radium Actinium Thorium Protactinium Uran Neptunium Plutonium Americium Curium Berkelium Californium Einsteinium Fermium Mendelevium Nobelium Lawrencium Rutherfordium Dubnium Seaborgium Bohrium Hassium Meitnerium Darmstadtium Roentgenium Copernicium Nihonium Flerovium Moscovium Livermorium Tenness Oganesson".split(" "),
+ facts:["Das leichteste Element; Brennstoff der Sterne.","Edelgas, zuerst im Sonnenlicht entdeckt.","Das leichteste Metall; treibt Akkus an.","Steifes, leichtes Metall für Raumfahrt und Röntgenfenster.","Für Pflanzen essenziell; in Glas und Magneten.","Das Rückgrat allen bekannten Lebens.","Macht 78 % der Erdatmosphäre aus.","Trägt Verbrennung und Atmung.","Das reaktivste und elektronegativste Element.","Leuchtet rot-orange in Leuchtreklamen.","Weiches Metall, reagiert heftig mit Wasser.","Verbrennt mit gleißend weißem Licht.","Häufigstes Metall der Erdkruste.","Das Herz der modernen Elektronik.","Leuchtet im Dunkeln; lebenswichtig für DNA und Knochen.","Gelbes Element, seit der Antike als Schwefel bekannt.","Desinfiziert weltweit Trinkwasser.","Rund 1 % der Luft; inertes Schutzgas.","Essenziell für Nervensignale; reagiert heftig mit Wasser.","Baut Knochen, Zähne, Muscheln und Kalkstein.","Leichtmetall, das Aluminiumlegierungen stärkt.","So fest wie Stahl bei fast halbem Gewicht.","Härtet Werkzeugstahl und Federn.","Verleiht Edelstahl seinen Glanz.","Stärkt Stahl; Schlüssel zur Photosynthese.","Meistgenutztes Metall; bildet den Erdkern.","Uraltes blaues Pigment; Kern von Vitamin B12.","Korrosionsbeständig; in Münzen und Meteoriten.","Erstes vom Menschen bearbeitetes Metall; hervorragender Leiter.","Verzinkt Stahl; essenzielles Spurenelement.","Ein Metall, das in der Hand schmilzt.","Früher Halbleiter; heute in Glasfasern.","Berüchtigtes Gift mit Halbleiternutzen; sublimiert.","Lichtempfindlich; einst in Kopierern.","Eines von nur zwei bei Raumtemperatur flüssigen Elementen.","Seine Spektrallinie definierte einst den Meter.","So reaktiv, dass es sich an Luft entzündet.","Brennt purpurrot im Feuerwerk.","In LEDs und Supraleitern.","Hülle für Kernbrennstäbe.","Supraleitende Magnete in MRT-Geräten.","Härtet Stahl; wichtiger Enzym-Cofaktor.","Das erste künstlich erzeugte Element.","Härtet Platinlegierungen; vielseitiger Katalysator.","Eines der teuersten Metalle; reinigt Abgase.","Nimmt das 900-Fache seines Volumens an Wasserstoff auf.","Der beste elektrische Leiter aller Elemente.","Batteriemetall; giftiges Schwermetall.","Weiches Metall in jeder Touchscreen-Beschichtung.","Bestandteil der Bronze seit der Antike.","Härtet Blei; in Flammschutzmitteln.","Selten; legiert in Solarmodulen.","Essenziell für Schilddrüsenhormone.","Treibt Ionenantriebe und Blitzlichter an.","Seine Atomschwingung definiert die Sekunde.","Grünes Feuerwerk und Röntgen-Kontrastmittel.","Feuersteine und Kameralinsen.","Das häufigste Seltenerdelement.","Färbt Schweißerbrillen gelbgrün.","Quelle der stärksten Dauermagnete.","Die einzige Seltene Erde ohne stabiles Isotop.","Magnete, die hohe Temperaturen aushalten.","Rotes Leuchten in Bildschirmen und Euroscheinen.","MRT-Kontrastmittel und Neutronenabsorber.","Der grüne Leuchtstoff in Displays.","Hält Magnete in heißen E-Motoren leistungsfähig.","Die stärkste magnetische Kraft aller Elemente.","Verstärkt Signale in Glasfaserkabeln.","Seltenste stabile Seltene Erde; mobile Röntgenquellen.","Kandidat für Atomuhren der nächsten Generation.","Dichteste Seltene Erde; in PET-Detektoren.","Steuerstäbe; chemischer Zwilling des Zirconiums.","Kondensatoren in fast jedem Handy.","Höchster Schmelzpunkt aller Metalle.","Superlegierungen für Triebwerke; eines der seltensten Metalle.","Das dichteste natürlich vorkommende Element.","Markiert die Asteroideneinschlagsschicht im Gestein.","Katalysatoren und feiner Schmuck.","Seit Jahrtausenden begehrt; läuft nie an.","Das einzige bei Raumtemperatur flüssige Metall.","Weich und giftig; einst Rattengift.","Dicht und weich; schirmt Strahlung ab.","Bildet regenbogenfarbene Treppenkristalle.","Stark radioaktiv; von Marie Curie entdeckt.","Das seltenste natürliche Element der Erde.","Radioaktives Gas, das in Keller eindringt.","Extrem selten; das langlebigste Isotop hält 22 Minuten.","Bemalte einst leuchtende Zifferblätter.","Gab den Actinoiden ihren Namen.","Möglicher Brennstoff künftiger Reaktoren.","Eines der seltensten und teuersten natürlichen Elemente.","Brennstoff für Kernkraft und Waffen.","Das erste Transuran-Element.","Treibt Raumsonden und Sprengköpfe an.","In Rauchmeldern im Haushalt.","Benannt nach Marie und Pierre Curie.","Benannt nach Berkeley, Kalifornien.","Neutronenquelle zum Anfahren von Reaktoren.","In den Trümmern einer Wasserstoffbombe entdeckt.","Schwerstes durch Neutroneneinfang erzeugbares Element.","Benannt nach Mendelejew.","Benannt nach Alfred Nobel.","Schließt die Actinoidenreihe ab.","Das erste superschwere Element.","Benannt nach Dubna, Russland.","Benannt nach Glenn Seaborg zu dessen Lebzeiten.","Benannt nach Niels Bohr.","Benannt nach Hessen, Deutschland.","Benannt nach der Physikerin Lise Meitner.","Benannt nach Darmstadt, Deutschland.","Benannt nach Wilhelm Röntgen.","Benannt nach Kopernikus.","Das erste in Asien entdeckte Element.","Benannt nach dem Flerow-Labor.","Benannt nach der Oblast Moskau.","Benannt nach dem Livermore-Labor.","Benannt nach Tennessee; eines der neuesten Elemente.","Das schwerste bekannte Element."]}
+};
+let LANG="en";
+const T=()=>I18N[LANG];
+const nameOf=i=>T().names?T().names[i]:E[i][1];
+const factOf=i=>T().facts?T().facts[i]:E[i][8];
+
+/* ============ TABLE GRID ============ */
+const grid=document.getElementById('grid');
+const tiles=[],nmEls=[];
+E.forEach((el,i)=>{
+  const z=i+1,[sym,,mass,cat]=el,{r,c}=posOf(z);
+  const b=document.createElement('button');
+  b.className='tile'; b.style.setProperty('--c',`var(${CATS[cat][1]})`);
+  b.style.gridRow=r; b.style.gridColumn=c;
+  b.dataset.z=z; b.dataset.cat=cat;
+  b.innerHTML=`<span class="num">${z}</span><span class="sym">${sym}</span>
+    <span class="nm"></span><span class="ms">${mass}</span>`;
+  b.addEventListener('click',()=>openModal(z));
+  grid.appendChild(b); tiles.push(b); nmEls.push(b.querySelector('.nm'));
+});
+[[6,3,'57–71',57,'--lanthanide'],[7,3,'89–103',89,'--actinide']].forEach(([r,c,t,z,v])=>{
+  const d=document.createElement('button');
+  d.className='tile placeholder'; d.style.setProperty('--c',`var(${v})`);
+  d.style.gridRow=r; d.style.gridColumn=c; d.textContent=t;
+  d.addEventListener('click',()=>openModal(z));
+  grid.appendChild(d);
+});
+const seriesEls=[1,2].map((_,i)=>{
+  const lab=document.createElement('div');
+  lab.className='series-label'; lab.style.gridRow=9+i;
+  grid.appendChild(lab); return lab;
+});
+
+/* ============ SEARCH + LEGEND FILTER ============ */
+const legend=document.getElementById('legend');
+let activeCat=null;
+function buildLegend(){
+  legend.innerHTML='';
+  T().cats.forEach((name,i)=>{
+    const c=document.createElement('button');
+    c.className='chip'+(i===activeCat?' active':'');
+    c.style.setProperty('--c',`var(${CATS[i][1]})`);
+    c.innerHTML=`<span class="dot"></span>${name}`;
+    c.addEventListener('click',()=>{
+      activeCat=activeCat===i?null:i;
+      [...legend.children].forEach((x,j)=>x.classList.toggle('active',j===activeCat));
+      applyFilter();
+    });
+    legend.appendChild(c);
+  });
+}
+const searchBox=document.getElementById('search');
+searchBox.addEventListener('input',applyFilter);
+function applyFilter(){
+  const q=searchBox.value.trim().toLowerCase();
+  tiles.forEach((t,i)=>{
+    const z=i+1,sym=E[i][0];
+    const okQ=!q||E[i][1].toLowerCase().includes(q)||nameOf(i).toLowerCase().includes(q)
+      ||sym.toLowerCase()===q||String(z)===q;
+    const okC=activeCat===null||+t.dataset.cat===activeCat;
+    t.classList.toggle('dim',!(okQ&&okC));
+  });
+}
+
+/* ============ LANGUAGE SWITCH ============ */
+function setLang(code){
+  LANG=I18N[code]?code:'en';
+  const t=T();
+  document.documentElement.lang=LANG==='zh'?'zh-CN':LANG;
+  document.body.classList.toggle('cjk',['zh','ja','ko'].includes(LANG));
+  document.getElementById('title').innerHTML=t.title;
+  document.getElementById('eyebrow').textContent=t.eyebrow;
+  document.getElementById('subtitle').textContent=t.sub;
+  searchBox.placeholder=t.search;
+  buildLegend();
+  seriesEls[0].textContent=t.series[0];
+  seriesEls[1].textContent=t.series[1];
+  tiles.forEach((b,i)=>{
+    nmEls[i].textContent=nameOf(i);
+    b.setAttribute('aria-label',`${nameOf(i)}, ${t.zLabel} ${i+1}`);
+  });
+  document.querySelector('.hint').textContent=t.drag;
+  document.querySelector('.spec-label').textContent=t.spectral;
+  document.getElementById('prev-btn').textContent=t.prev;
+  document.getElementById('next-btn').textContent=t.next;
+  document.getElementById('lang').value=LANG;
+  applyFilter();
+  if(window.refreshModal)window.refreshModal();
+}
+document.getElementById('lang').addEventListener('change',e=>setLang(e.target.value));
+
+/* ============ 3D ATOM (three.js) ============ */
+const canvas=document.getElementById('atom-canvas');
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let renderer,scene,camera,atomGroup,rings=[],animId=null;
+
+function initThree(){
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(45,1,0.1,1000);
+  scene.add(new THREE.AmbientLight(0x8899bb,0.8));
+  const pl=new THREE.PointLight(0xffffff,0.9); pl.position.set(12,18,22); scene.add(pl);
+  atomGroup=new THREE.Group(); scene.add(atomGroup);
+  // pointer drag rotation
+  let drag=false,px=0,py=0;
+  canvas.addEventListener('pointerdown',e=>{drag=true;px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId)});
+  canvas.addEventListener('pointermove',e=>{
+    if(!drag)return;
+    atomGroup.rotation.y+=(e.clientX-px)*0.008;
+    atomGroup.rotation.x=Math.max(-1.3,Math.min(1.3,atomGroup.rotation.x+(e.clientY-py)*0.008));
+    px=e.clientX;py=e.clientY;
+  });
+  canvas.addEventListener('pointerup',()=>drag=false);
+  canvas.addEventListener('pointercancel',()=>drag=false);
+  canvas._dragging=()=>drag;
+}
+function clearAtom(){
+  atomGroup.traverse(o=>{
+    if(o.geometry)o.geometry.dispose();
+    if(o.material)o.material.dispose();
+  });
+  while(atomGroup.children.length)atomGroup.remove(atomGroup.children[0]);
+  rings=[];
+}
+function buildAtom(z,hex){
+  clearAtom();
+  atomGroup.rotation.set(0.35,0.4,0);
+  // --- nucleus: protons + neutrons packed in a ball ---
+  const mass=Math.round(E[z-1][2]);
+  const nucleons=Math.min(mass,64);
+  const protonRatio=z/mass;
+  const R=0.34*Math.cbrt(nucleons);
+  const geoN=new THREE.SphereGeometry(0.24,12,12);
+  const matP=new THREE.MeshPhongMaterial({color:0xff6e6e,shininess:40});
+  const matN=new THREE.MeshPhongMaterial({color:0x6c7a96,shininess:40});
+  const ga=Math.PI*(3-Math.sqrt(5));
+  for(let i=0;i<nucleons;i++){
+    const t=(i+0.5)/nucleons, r=R*Math.cbrt(t);
+    const th=ga*i, ph=Math.acos(1-2*t);
+    const s=new THREE.Mesh(geoN,(i/nucleons)<protonRatio?matP:matN);
+    s.position.set(r*Math.sin(ph)*Math.cos(th),r*Math.sin(ph)*Math.sin(th),r*Math.cos(ph));
+    atomGroup.add(s);
+  }
+  // --- electron shells ---
+  const shells=shellsOf(z);
+  const eGeo=new THREE.SphereGeometry(0.14,10,10);
+  const eMat=new THREE.MeshBasicMaterial({color:new THREE.Color(hex)});
+  let maxR=R;
+  shells.forEach((count,si)=>{
+    const rs=R+1.5+si*1.15; maxR=rs;
+    const ring=new THREE.Group();
+    ring.rotation.x=0.5*si+0.3;
+    ring.rotation.y=0.4*si;
+    // orbit line
+    const pts=[];
+    for(let a=0;a<=64;a++){const t=a/64*Math.PI*2;
+      pts.push(new THREE.Vector3(Math.cos(t)*rs,Math.sin(t)*rs,0));}
+    const line=new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(pts),
+      new THREE.LineBasicMaterial({color:0x5a6b8c,transparent:true,opacity:0.35}));
+    ring.add(line);
+    // electrons evenly spaced
+    for(let e=0;e<count;e++){
+      const a=e/count*Math.PI*2;
+      const m=new THREE.Mesh(eGeo,eMat);
+      m.position.set(Math.cos(a)*rs,Math.sin(a)*rs,0);
+      ring.add(m);
+    }
+    ring._speed=(si%2?-1:1)*0.018/(1+si*0.3);
+    rings.push(ring);
+    atomGroup.add(ring);
+  });
+  camera.position.set(0,0,maxR*2.5+4);
+  camera.lookAt(0,0,0);
+}
+function sizeRenderer(){
+  const w=canvas.clientWidth||340;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(w,w,false);
+  camera.aspect=1; camera.updateProjectionMatrix();
+}
+function animate(){
+  animId=requestAnimationFrame(animate);
+  if(!reduced){
+    if(!canvas._dragging())atomGroup.rotation.y+=0.0035;
+    rings.forEach(r=>r.rotation.z+=r._speed);
+  }
+  renderer.render(scene,camera);
+}
+window.addEventListener('resize',()=>{if(animId)sizeRenderer()});
+
+/* ============ SPECTRUM ============ */
+function drawSpectrum(z){
+  const cv=document.getElementById('spectrum'),ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  let s=z*2654435761>>>0;
+  const rnd=()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);
+    t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+  const n=16+z%16;
+  for(let i=0;i<n;i++){
+    const x=8+rnd()*(cv.width-16);
+    const hue=Math.floor(rnd()*360);
+    ctx.fillStyle=`hsla(${hue},90%,62%,${0.45+rnd()*0.55})`;
+    ctx.fillRect(x,4,1+rnd()*2.2,cv.height-8);
+  }
+}
+
+
+/* ============ MODAL ============ */
+const overlay=document.getElementById('overlay');
+const PH={Solid:0,Liquid:1,Gas:2,Unknown:3};
+let currentZ=null,lastFocus=null;
+function fillModal(z){
+  const t=T();
+  const el=E[z-1],[sym,,mass,cat,melt,boil,dens,year]=el;
+  const hex=catColor(cat);
+  overlay.querySelector('.sheet').style.setProperty('--c',hex);
+  const ms=document.getElementById('m-sym');
+  ms.textContent=sym; ms.style.color=hex;
+  document.getElementById('m-name').textContent=nameOf(z-1);
+  document.getElementById('m-z').textContent=t.zLabel+' '+z;
+  const badge=document.getElementById('m-cat');
+  badge.textContent=t.cats[cat]; badge.style.setProperty('--c',hex);
+  document.getElementById('m-fact').textContent=factOf(z-1);
+  document.getElementById('shells-line').innerHTML=
+    t.shellsWord+'&nbsp; <b>'+shellsOf(z).join(' · ')+'</b>';
+  const L=t.labels;
+  const rows=[
+    [L[0],mass+' u'],
+    [L[1],t.phases[PH[phaseOf(el)]]],
+    [L[2],'<span class="mono">'+configOf(z)+'</span>',true],
+    [L[3],t.blockTpl.replace('{b}',blockOf(z))],
+    [L[4],groupOf(z)+' / '+periodOf(z)],
+    [L[5],fmtK(melt)],
+    [L[6],fmtK(boil)],
+    [L[7],fmtD(dens)],
+    [L[8],year?year:t.antiquity],
+  ];
+  document.getElementById('m-data').innerHTML=rows.map(([k,v,w])=>
+    `<div class="cell${w?' wide':''}"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+  drawSpectrum(z);
+}
+function openModal(z){
+  currentZ=z; lastFocus=document.activeElement;
+  fillModal(z);
+  overlay.classList.add('open');
+  if(!renderer)initThree();
+  sizeRenderer();
+  buildAtom(z,catColor(E[z-1][3]));
+  if(animId===null)animate();
+  if(reduced)renderer.render(scene,camera);
+  document.getElementById('close-btn').focus();
+}
+window.refreshModal=()=>{
+  if(overlay.classList.contains('open')&&currentZ)fillModal(currentZ);
+};
+function closeModal(){
+  overlay.classList.remove('open');
+  if(animId!==null){cancelAnimationFrame(animId);animId=null;}
+  if(lastFocus)lastFocus.focus();
+}
+document.getElementById('close-btn').addEventListener('click',closeModal);
+overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal()});
+document.addEventListener('keydown',e=>{
+  if(!overlay.classList.contains('open'))return;
+  if(e.key==='Escape')closeModal();
+  if(e.key==='ArrowLeft')openModal(Math.max(1,currentZ-1));
+  if(e.key==='ArrowRight')openModal(Math.min(118,currentZ+1));
+});
+document.getElementById('prev-btn').addEventListener('click',()=>openModal(currentZ>1?currentZ-1:118));
+document.getElementById('next-btn').addEventListener('click',()=>openModal(currentZ<118?currentZ+1:1));
+
+/* ============ INIT ============ */
+const nav=(navigator.language||'en').toLowerCase();
+setLang(['zh','ja','ko','fr','de'].find(l=>nav.startsWith(l))||'en');
+
+</script>
+</body>
+</html>

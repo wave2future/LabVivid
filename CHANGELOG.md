@@ -6,6 +6,23 @@ date.
 
 ---
 
+## 2026-06-15 — Integrate interactive Periodic Table (chemistry)
+
+**Prompt:** "E:\\GoingGlobal\\Code\\19-LabVivid\\PeriodicTable.html Integrate this
+Period Table into CHEMISTRY"
+
+**Changes:**
+- Added the self-contained interactive 3D periodic table as a static asset
+  (`public/periodic-table.html`) and embedded it via `src/components/PeriodicTable.tsx`
+  (iframe, base-URL aware so it works under GitHub Pages).
+- New chemistry model `src/models/periodicTable.ts` (metadata, data, Learn
+  content, EN/中文/日本語, plus a 2D mini-grid thumbnail for the library card);
+  registered in the model registry and the custom-view registry.
+- `ModelPage` now hides the Parameters panel for models with no controls.
+- Now 47 models total (8 chemistry).
+
+---
+
 ## 2026-06-15 — Interactive 3D for Solar System & Black Hole
 
 **Prompt:** "solar system and black hole 2d effect is not so good, I want you to
