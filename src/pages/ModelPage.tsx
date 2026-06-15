@@ -114,6 +114,8 @@ function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean 
   }, []);
 
   const Custom = custom3D[model.meta.id];
+  // Embedded full-page views (e.g. the periodic table) get a full-width layout.
+  const fullBleed = model.meta.id === 'periodic-table';
   const stage = (
     <div ref={stageWrapRef} className={classroom ? 'classroom' : ''}>
       <div className="panel" style={{ overflow: 'hidden' }}>
@@ -155,7 +157,7 @@ function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean 
         <button className="iconbtn" onClick={toggleClassroom}>⛶ {t('share.fullscreen')}</button>
       </div>
 
-      <div className="model-page">
+      <div className={`model-page${fullBleed ? ' full' : ''}`}>
         <div className="sim-col">
           {stage}
 
@@ -191,10 +193,12 @@ function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean 
             </div>
           </div>
 
-          <div className={`panel${mobileTab !== 'data' ? ' mobile-hidden' : ''}`}>
-            <div className="panel-head">{t('panel.formulas')}</div>
-            <div className="panel-body"><Formula formulas={model.formulas} /></div>
-          </div>
+          {model.formulas.length > 0 && (
+            <div className={`panel${mobileTab !== 'data' ? ' mobile-hidden' : ''}`}>
+              <div className="panel-head">{t('panel.formulas')}</div>
+              <div className="panel-body"><Formula formulas={model.formulas} /></div>
+            </div>
+          )}
         </div>
 
         <div className="side-col">

@@ -173,8 +173,12 @@ input, select, textarea { font-family: inherit; }
 
 /* embedded page (iframe) stage */
 .embed-stage { position: relative; background: #0a0e16; border-radius: var(--radius); overflow: hidden; }
-.embed-frame { width: 100%; height: 620px; border: 0; display: block; }
-.classroom .embed-frame { height: 100%; }
+.embed-frame { width: 100%; height: 82vh; min-height: 560px; border: 0; display: block; }
+.classroom .embed-frame { height: 100%; min-height: 0; }
+
+/* full-width layout for embedded full-page models (e.g. periodic table) */
+.model-page.full { grid-template-columns: 1fr; }
+.model-page.full .side-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 
 /* interactive 3D stage */
 .three-stage { position: relative; background: #05070f; border-radius: var(--radius); overflow: hidden; }

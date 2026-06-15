@@ -6,6 +6,20 @@ date.
 
 ---
 
+## 2026-06-15 — Full-width layout for the Periodic Table
+
+**Prompt:** "Too small of the model display area for periodic table. Can you just
+embed E:\\GoingGlobal\\Code\\19-LabVivid\\PeriodicTable.html file?"
+
+**Changes:**
+- The periodic table now uses a full-width, single-column layout (`model-page.full`)
+  with a much taller embed (82vh, min 560px) so it is no longer cramped in the
+  split column; the Learn/Notes panels flow below in a responsive grid.
+- Hid the Formulas panel for models that define none (matches the earlier
+  empty-Parameters fix).
+
+---
+
 ## 2026-06-15 — Integrate interactive Periodic Table (chemistry)
 
 **Prompt:** "E:\\GoingGlobal\\Code\\19-LabVivid\\PeriodicTable.html Integrate this
