@@ -1,16 +1,16 @@
-// Registry of models that use a custom interactive 3D view instead of the
-// standard 2D canvas. ModelPage renders these in place of <Stage>.
-// Lazy-loaded so Three.js is only fetched when a 3D model is opened.
+// Registry of models that use a custom view (interactive 3D or an embedded
+// self-contained page) instead of the standard 2D canvas. ModelPage renders
+// these in place of <Stage>.
 import { lazy, type ComponentType } from 'react';
 import type { Variables } from '../types/model';
-import { PeriodicTable } from './PeriodicTable';
+import { embedView } from './EmbedView';
 
 export type Custom3DView = ComponentType<{ vars: Variables; isDark: boolean }>;
 
-// Models whose visual is a custom view (interactive 3D or an embedded page)
-// instead of the standard 2D canvas.
 export const custom3D: Record<string, Custom3DView> = {
+  // Three.js scene, code-split so three is only fetched when opened.
   'solar-system': lazy(() => import('./SolarSystem3D').then((m) => ({ default: m.SolarSystem3D }))),
-  'black-hole': lazy(() => import('./BlackHole3D').then((m) => ({ default: m.BlackHole3D }))),
-  'periodic-table': PeriodicTable,
+  // Embedded self-contained pages.
+  'black-hole': embedView('blackhole.html', 'Black Hole'),
+  'periodic-table': embedView('periodic-table.html', 'Periodic Table'),
 };

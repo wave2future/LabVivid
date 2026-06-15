@@ -95,15 +95,9 @@ export const blackHole: ModelDefinition = {
     tags: ['gravity', 'relativity', 'astrophysics', 'event horizon'],
     accent: '#f59e0b',
   },
-  controls: [
-    { type: 'slider', key: 'mass', label: 'Mass', labelZh: '质量', min: 1, max: 100, step: 1, unit: 'M☉' },
-  ],
+  controls: [],
   defaultVariables: { mass: 10 },
-  presets: [
-    { name: 'Stellar (10 M☉)', nameZh: '恒星级 (10 M☉)', variables: { mass: 10 } },
-    { name: 'Heavy (50 M☉)', nameZh: '大质量 (50 M☉)', variables: { mass: 50 } },
-    { name: 'Light (3 M☉)', nameZh: '轻量 (3 M☉)', variables: { mass: 3 } },
-  ],
+  presets: [],
   concepts: [
     'The event horizon is the boundary where escape would require faster than light — nothing gets out.',
     'Its size, the Schwarzschild radius Rs = 2GM/c², is directly proportional to mass.',

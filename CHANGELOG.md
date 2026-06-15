@@ -6,6 +6,24 @@ date.
 
 ---
 
+## 2026-06-15 — Replace Black Hole with shader simulation (embedded)
+
+**Prompt:** "Black hole effect not so good, change to this one instead (Remove
+upperleft Chinese characters): E:\\GoingGlobal\\Code\\19-LabVivid\\blackhole.html"
+
+**Changes:**
+- Swapped the Three.js BlackHole3D component for the new raymarched/gravitational-
+  lensing shader page, served as `public/blackhole.html` and embedded via an
+  iframe. The upper-left overlay's Chinese title/hint was replaced with an English
+  hint ("Drag to rotate · Scroll to zoom").
+- Generalized embedding into `src/components/EmbedView.tsx` (`embedView(file,
+  title)`); the custom-view registry now uses it for both the black hole and the
+  periodic table. Removed the unused `BlackHole3D.tsx` and `PeriodicTable.tsx`.
+- Black hole now uses the full-width layout (like the periodic table) and has no
+  parameter controls; Learn content and reference data are kept.
+
+---
+
 ## 2026-06-15 — Fix classroom-mode height for embedded/3D stages
 
 **Prompt:** "periodic table classroom mode display area height too small."

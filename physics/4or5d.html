@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Interstellar Tesseract - Three.js</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; color: #fff; font-family: sans-serif; }
+        #ui { position: absolute; top: 20px; left: 20px; pointer-events: none; text-shadow: 0 0 10px rgba(0,255,255,0.8); }
+        .hint { font-size: 0.8em; opacity: 0.7; }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <h2>五维时空观测站 (Tesseract)</h2>
+        <p>移动鼠标: 扭曲维度 | 滚动滚轮: 穿越时间线</p>
+        <p class="hint">"Stay" - Cooper</p>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // --- 初始化场景 ---
+        const scene = new THREE.Scene();
+        // 模拟深空感，增加深蓝色雾化
+        scene.fog = new THREE.FogExp2(0x000510, 0.015);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // --- 构建超立方体网格 ---
+        const group = new THREE.Group();
+        const size = 10; // 每个时间切片的大小
+        const divisions = 10; // 维度分支数量
+
+        // 创建发光的线条材质
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0x00ffff, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.3
+        });
+
+        for (let x = -divisions; x < divisions; x++) {
+            for (let y = -divisions; y < divisions; y++) {
+                for (let z = -divisions; z < divisions; z++) {
+                    const geometry = new THREE.BoxGeometry(size, size, size);
+                    const cube = new THREE.Mesh(geometry, material);
+                    
+                    cube.position.set(x * size, y * size, z * size);
+                    group.add(cube);
+                }
+            }
+        }
+        scene.add(group);
+
+        // --- 交互变量 ---
+        let mouseX = 0, mouseY = 0;
+        let targetZ = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.05;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.05;
+        });
+
+        window.addEventListener('wheel', (e) => {
+            targetZ += e.deltaY * 0.05;
+        });
+
+        // --- 动画循环 ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // 平滑相机移动（模拟四维生物在重力波中的漂浮感）
+            camera.position.x += (mouseX - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY - camera.position.y) * 0.05;
+            camera.position.z += (targetZ - camera.position.z) * 0.05;
+
+            // 动态改变 FOV 产生“空间拉伸”特效
+            const movementSpeed = Math.abs(mouseX) + Math.abs(mouseY);
+            camera.fov = 75 + (movementSpeed * 0.1); 
+            camera.updateProjectionMatrix();
+
+            // 让网格产生轻微的维度偏移旋转
+            group.rotation.x += 0.001;
+            group.rotation.y += 0.001;
+
+            // 循环背景：当走出范围时重置位置，实现无限穿越
+            if (camera.position.z > 50) {
+                camera.position.z = 0;
+                targetZ = 0;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // 响应窗口缩放
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
