@@ -17,6 +17,9 @@ import { collisions } from './collisions';
 import { refraction } from './refraction';
 import { phScale } from './phScale';
 import { reactionRate } from './reactionRate';
+import { predatorPrey } from './predatorPrey';
+import { genetics } from './genetics';
+import { enzymeKinetics } from './enzymeKinetics';
 
 export const models: ModelDefinition[] = [
   projectileMotion,
@@ -32,6 +35,9 @@ export const models: ModelDefinition[] = [
   refraction,
   idealGas,
   population,
+  predatorPrey,
+  genetics,
+  enzymeKinetics,
   derivative,
   fractions,
   phScale,

@@ -6,6 +6,23 @@ date.
 
 ---
 
+## 2026-06-15 — More biology models
+
+**Prompt:** "Add more biology models"
+
+**Changes:**
+- Added `src/models/predatorPrey.ts` — Predator & Prey (Lotka–Volterra) with RK4
+  integration and equilibrium-relative initial conditions for stable, bounded
+  cycles; animated time series + phase-portrait chart.
+- Added `src/models/genetics.ts` — Genetics / Punnett square (monohybrid cross →
+  genotype & phenotype ratios, color-coded grid).
+- Added `src/models/enzymeKinetics.ts` — Enzyme Kinetics (Michaelis–Menten
+  saturation curve, Km/Vmax guides, competitive inhibitor toggle).
+- Registered all three with Japanese title/description and Learn content (now 4
+  biology models, 20 total).
+
+---
+
 ## 2026-06-15 — Automate changelog + commits; project memory
 
 **Prompt:** "For each major modification, automatically write to `CHANGELOG.md`
