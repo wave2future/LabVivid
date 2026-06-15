@@ -6,6 +6,25 @@ date.
 
 ---
 
+## 2026-06-15 — Auto-commit major modifications to GitHub
+
+**Prompt:** "For all major modifications, automatically commit to GitHub."
+
+**Changes:**
+- Committed and pushed the prior sidebar + Fractions work to `origin/main`.
+- Stopped tracking `tsconfig.app.tsbuildinfo` and ignored `*.tsbuildinfo`.
+- Added a `Stop` hook in `.claude/settings.json` that runs
+  `.claude/hooks/auto-commit.sh` whenever Claude finishes a turn. The script
+  stages all changes, creates a commit, and pushes the current branch to
+  `origin` — but only when the working tree has changes. It is resilient: it
+  no-ops on a clean tree, never blocks stopping, and treats the push as
+  best-effort (a local commit still succeeds if the push fails, e.g. offline).
+
+**Verification:** script pipe-tested for both the commit path and the clean-tree
+no-op path; push to `origin/main` confirmed.
+
+---
+
 ## 2026-06-15 — Sidebar navigation + Fractions model
 
 **Prompt:** "It can be split into left and right columns. The left column
