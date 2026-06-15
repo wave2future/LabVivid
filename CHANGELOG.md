@@ -6,6 +6,98 @@ date.
 
 ---
 
+## 2026-06-15 — Automate changelog + commits; project memory
+
+**Prompt:** "For each major modification, automatically write to `CHANGELOG.md`
+as required, and automatically commit to GitHub. Also you can write this to
+memory."
+
+**Changes:**
+- Added `CLAUDE.md` (project memory) with standing working agreements: update
+  `CHANGELOG.md` for every major modification and commit + push to GitHub each
+  time (the `Stop` hook auto-commits; commit manually if it has not reloaded).
+- Going forward, every major change records a changelog entry and is pushed.
+
+---
+
+## 2026-06-15 — More chemistry models
+
+**Prompt:** "Add more chemistry models."
+
+**Changes:**
+- Added `src/models/phScale.ts` — pH Scale explorer (strong acid/base
+  concentration → pH, with a colored pH scale and tinted beaker).
+- Added `src/models/reactionRate.ts` — Reaction Rate via collision theory
+  (temperature, concentration, catalyst → Arrhenius relative rate; animated
+  particles + rate-vs-temperature chart).
+- Registered both; each includes Japanese title/description and Learn content.
+
+---
+
+## 2026-06-15 — Fix Converging Lens object-height scaling
+
+**Prompt:** "For Converging Lens model, changing parameters 'Object height', the
+object height does not changed in the graph."
+
+**Changes:**
+- The vertical scale auto-normalized to the object height, which canceled out
+  any change. Switched to a fixed vertical scale (px per cm) so the object arrow
+  visibly grows/shrinks with the height; clamped the image tip to stay on-canvas.
+
+---
+
+## 2026-06-15 — More physics models (collisions, refraction)
+
+**Prompt:** "Add more Physics models"
+
+**Changes:**
+- Added `src/models/collisions.ts` — 1D Collisions (momentum + restitution;
+  elastic↔inelastic, animated carts).
+- Added `src/models/refraction.ts` — Refraction / Snell's law (with total
+  internal reflection and critical angle; ray diagram).
+- Registered both with Japanese title/description and Learn content.
+
+---
+
+## 2026-06-15 — Model introductions, principles & tips
+
+**Prompt:** "Add introductions, principles, understanding tips, etc. for the
+corresponding models."
+
+**Changes:**
+- Added a localized `learn` field (intro, principle, tips) to the model contract
+  and a `LearnPanel` component shown in a new "Learn" tab/panel.
+- Wrote introduction, how-it-works principle, and 3 understanding tips (EN/中文/
+  日本語) for every model.
+
+---
+
+## 2026-06-15 — Multilingual support (Japanese)
+
+**Prompt:** "Add multilingual support. Add Japanese support first."
+
+**Changes:**
+- Made the i18n layer locale-extensible (`en`/`zh`/`ja`) with English fallback;
+  fully translated the UI chrome to Japanese and added a `pick()` helper for
+  localized model fields.
+- Replaced the language toggle with a 3-way selector (English / 中文 / 日本語).
+- Added Japanese titles and descriptions to all models.
+
+---
+
+## 2026-06-15 — Hide AI panel; add physics models
+
+**Prompt:** "Hide AI Explanation, add more physics models."
+
+**Changes:**
+- Added a `FEATURES` flag (`src/config.ts`) and hid the AI Explanation panel and
+  its tab (easy to re-enable).
+- Added three physics models: `inclinedPlane.ts` (friction on a ramp),
+  `wave.ts` (transverse wave, v = λf), and `lens.ts` (converging-lens ray
+  diagram). Registered all three.
+
+---
+
 ## 2026-06-15 — Auto-commit major modifications to GitHub
 
 **Prompt:** "For all major modifications, automatically commit to GitHub."

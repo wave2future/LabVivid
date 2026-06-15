@@ -13,17 +13,16 @@ charts, and get grounded explanations. Built as the MVP described in
   (metadata, controls, presets, compute, render, charts, formulas).
 - **Left sidebar navigation** grouping models by subject category + name, with a
   persistent column on desktop and a hamburger-toggled drawer on mobile.
-- **Ten high-quality models** across four subjects
-  - Physics · Projectile Motion (animated, step-through)
-  - Physics · Ohm's Law Circuit (animated current flow)
-  - Physics · Simple Pendulum (animated, step-through)
-  - Physics · Mass on a Spring / SHM (animated, step-through)
-  - Chemistry · Acid–Base Titration (pH curve + indicator color)
-  - Chemistry · Ideal Gas Law (animated piston + particles)
-  - Mathematics · Function Transformation `g(x) = a·f(x−h)+k`
-  - Mathematics · Derivative & Tangent Line explorer
-  - Mathematics · Fractions (pie / square-cut / grid, proper & improper)
+- **Seventeen high-quality models** across four subjects
+  - Physics · Projectile Motion, Ohm's Law Circuit, Simple Pendulum, Mass on a
+    Spring (SHM), Inclined Plane (friction), Transverse Wave, Converging Lens,
+    1D Collisions (momentum), Refraction (Snell's law)
+  - Chemistry · Acid–Base Titration, Ideal Gas Law, pH Scale, Reaction Rate
+    (collision theory)
+  - Mathematics · Function Transformation, Derivative & Tangent, Fractions
   - Biology · Population Growth (exponential vs logistic)
+- **Learn panel** for every model — a localized introduction, the underlying
+  principle, and practical tips for understanding.
 - **Real-time controls** — sliders, toggles, numeric inputs, dropdowns, presets,
   with play / pause / reset / step and deterministic reset.
 - **Visualization** — Canvas 2D animation, dependency-free SVG line charts, live
@@ -31,13 +30,13 @@ charts, and get grounded explanations. Built as the MVP described in
 - **Experiment state & sharing** — parameters serialize into the URL; copy a
   shareable link that restores the exact configuration. Invalid links are
   clamped to safe ranges and fall back gracefully.
-- **AI explanation panel** — optional, non-blocking, and grounded strictly in
-  the current model state with suggested questions (see *AI* below).
+- **AI explanation panel** — optional, non-blocking, grounded in the current
+  model state (currently hidden via `FEATURES.aiExplanation` in `src/config.ts`).
 - **Experiment notes** — save model + parameters + timestamp + observation to
   local storage; restore or delete any saved run.
 - **Cross-platform** — responsive desktop/mobile layouts, touch-friendly
   controls, classroom (full-screen) mode, screenshot export, PWA offline
-  support, and English / 中文 localization with light/dark themes.
+  support, English / 中文 / 日本語 localization, and light/dark themes.
 
 ## Tech stack
 
