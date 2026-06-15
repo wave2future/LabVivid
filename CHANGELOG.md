@@ -6,6 +6,22 @@ date.
 
 ---
 
+## 2026-06-15 — More math & physics models (vectors, exponential, Doppler, lever)
+
+**Prompt:** "Add more math and physics models"
+
+**Changes:**
+- Math: `src/models/vectorAddition.ts` (2D head-to-tail vector addition →
+  resultant magnitude & direction) and `src/models/exponential.ts` (y = a·bˣ
+  growth/decay with doubling time / half-life).
+- Physics: `src/models/doppler.ts` (Doppler effect — moving source, animated
+  wavefronts, ahead/behind frequencies) and `src/models/lever.ts` (Lever &
+  torque — balancing moments about a fulcrum).
+- Registered all four with Japanese title/description and Learn content (now 31
+  models total).
+
+---
+
 ## 2026-06-15 — More math & physics models
 
 **Prompt:** "Add more math and physics models"

@@ -25,8 +25,12 @@ import { standingWave } from './standingWave';
 import { coulomb } from './coulomb';
 import { freeFall } from './freeFall';
 import { buoyancy } from './buoyancy';
+import { doppler } from './doppler';
+import { lever } from './lever';
 import { unitCircle } from './unitCircle';
 import { quadratic } from './quadratic';
+import { vectorAddition } from './vectorAddition';
+import { exponential } from './exponential';
 
 export const models: ModelDefinition[] = [
   projectileMotion,
@@ -45,6 +49,8 @@ export const models: ModelDefinition[] = [
   coulomb,
   freeFall,
   buoyancy,
+  doppler,
+  lever,
   idealGas,
   population,
   predatorPrey,
@@ -54,6 +60,8 @@ export const models: ModelDefinition[] = [
   fractions,
   unitCircle,
   quadratic,
+  vectorAddition,
+  exponential,
   phScale,
   reactionRate,
 ];
