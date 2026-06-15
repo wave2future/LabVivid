@@ -6,6 +6,44 @@ date.
 
 ---
 
+## 2026-06-15 — Sidebar navigation + Fractions model
+
+**Prompt:** "It can be split into left and right columns. The left column
+displays model categories and model names, while the right side is the model
+display area. On mobile devices, the left model type column can be toggled using a
+'hamburger' menu button (like the '三' icon in the upper left corner of Android
+apps) — tapping it shows or hides the left column. Additionally, more models can
+be added; for mathematics, fraction models can be included (in forms such as
+circular pie charts, square cuts, etc.)."
+
+**Changes:**
+- Restructured the app into a left/right layout:
+  - Added `src/components/Sidebar.tsx` — a left column listing models grouped by
+    subject category with model names; highlights the active model and includes a
+    Home link.
+  - Reworked `src/App.tsx` into a `Shell` with a sticky sidebar + main content
+    area; added a hamburger (☰) button in the top bar that toggles the sidebar.
+  - On mobile the sidebar becomes a slide-in drawer with a tap-to-dismiss
+    backdrop; it auto-closes on navigation. On desktop it is always visible.
+  - Added shell/sidebar/drawer/hamburger styling and `--topbar-h` / `--sidebar-w`
+    tokens in `src/index.css`, including the mobile drawer media queries.
+  - Added `nav.home`, `nav.menu`, `nav.models` i18n strings (EN/中文).
+- Added a new mathematics model `src/models/fractions.ts` — Fractions visualized
+  as pie slices, square cuts, or a grid; supports proper and improper fractions
+  (renders multiple whole shapes), shows decimal value, percentage, and the
+  simplified (reduced) fraction. Registered it in `src/models/index.ts` and added
+  a grounded AI explanation case in `src/ai/explain.ts`.
+- Updated `README.md` for the sidebar navigation and the 10-model set.
+
+**Verification:** `tsc -b` clean; `npm run build` succeeds (PWA regenerated);
+preview server returns HTTP 200 for page and `sw.js`; fraction math validated
+(3/4 = 0.75 / 75%; 6/8 reduces to 3/4; improper 7/4 = 1.75; 0/5 = 0);
+server-render smoke test confirmed the sidebar groups (Physics, Chemistry,
+Mathematics, Biology), the active-model highlight, the mobile backdrop, the
+Fractions link, and that the Fractions page renders canvas + KaTeX + controls.
+
+---
+
 ## 2026-06-15 — Add changelog
 
 **Prompt:** "All modification records should be saved to the CHANGELOG.md file in

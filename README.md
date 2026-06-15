@@ -11,7 +11,9 @@ charts, and get grounded explanations. Built as the MVP described in
   thumbnails, difficulty + tags, and a "continue recent experiment" banner.
 - **Shared simulation runtime** — one definition format drives every model
   (metadata, controls, presets, compute, render, charts, formulas).
-- **Nine high-quality models** across four subjects
+- **Left sidebar navigation** grouping models by subject category + name, with a
+  persistent column on desktop and a hamburger-toggled drawer on mobile.
+- **Ten high-quality models** across four subjects
   - Physics · Projectile Motion (animated, step-through)
   - Physics · Ohm's Law Circuit (animated current flow)
   - Physics · Simple Pendulum (animated, step-through)
@@ -20,6 +22,7 @@ charts, and get grounded explanations. Built as the MVP described in
   - Chemistry · Ideal Gas Law (animated piston + particles)
   - Mathematics · Function Transformation `g(x) = a·f(x−h)+k`
   - Mathematics · Derivative & Tangent Line explorer
+  - Mathematics · Fractions (pie / square-cut / grid, proper & improper)
   - Biology · Population Growth (exponential vs logistic)
 - **Real-time controls** — sliders, toggles, numeric inputs, dropdowns, presets,
   with play / pause / reset / step and deterministic reset.
