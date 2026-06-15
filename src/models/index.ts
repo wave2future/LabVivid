@@ -17,6 +17,9 @@ import { collisions } from './collisions';
 import { refraction } from './refraction';
 import { phScale } from './phScale';
 import { reactionRate } from './reactionRate';
+import { equilibrium } from './equilibrium';
+import { beerLambert } from './beerLambert';
+import { radioactiveDecay } from './radioactiveDecay';
 import { predatorPrey } from './predatorPrey';
 import { genetics } from './genetics';
 import { enzymeKinetics } from './enzymeKinetics';
@@ -64,6 +67,9 @@ export const models: ModelDefinition[] = [
   exponential,
   phScale,
   reactionRate,
+  equilibrium,
+  beerLambert,
+  radioactiveDecay,
 ];
 
 export function getModel(id: string): ModelDefinition | undefined {

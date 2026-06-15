@@ -6,6 +6,22 @@ date.
 
 ---
 
+## 2026-06-15 — More chemistry models (equilibrium, Beer–Lambert, decay)
+
+**Prompt:** "Add more chemistry models"
+
+**Changes:**
+- `src/models/equilibrium.ts` — Chemical Equilibrium (reversible A ⇌ B, K from
+  forward/reverse rates, animated approach + concentration chart).
+- `src/models/beerLambert.ts` — Beer–Lambert law (A = εcl, transmittance,
+  colored cuvette + absorbance-vs-concentration chart).
+- `src/models/radioactiveDecay.ts` — Radioactive Decay (half-life, animated
+  nuclei grid + N-vs-time decay curve).
+- Registered all three with Japanese title/description and Learn content (now
+  34 models total; 7 chemistry).
+
+---
+
 ## 2026-06-15 — More math & physics models (vectors, exponential, Doppler, lever)
 
 **Prompt:** "Add more math and physics models"
