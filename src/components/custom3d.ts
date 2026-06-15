@@ -13,4 +13,5 @@ export const custom3D: Record<string, Custom3DView> = {
   // Embedded self-contained pages.
   'black-hole': embedView('blackhole.html', 'Black Hole'),
   'periodic-table': embedView('periodic-table.html', 'Periodic Table'),
+  'mandelbrot-set': embedView('mandelbrot.html', 'Mandelbrot Set', true),
 };

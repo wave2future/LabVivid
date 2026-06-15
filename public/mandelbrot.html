@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mandelbrot Set</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; }
+        #ui {
+            position: absolute; top: 20px; left: 20px;
+            color: white; font-family: sans-serif;
+            pointer-events: none; text-shadow: 1px 1px 2px black;
+        }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <h2 id="ttl">Mandelbrot Set</h2>
+        <p id="hint">Scroll: zoom | Drag: move</p>
+        <p id="stats">Zoom: 1.0x</p>
+    </div>
+
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        const LANG=new URLSearchParams(location.search).get('lang')||'en';
+        const I18N={en:{title:'Mandelbrot Set',hint:'🖥️ Scroll: zoom · Drag: move',zoom:'Zoom',iter:'Iterations'},zh:{title:'曼德博集合',hint:'🖥️ 滚轮：缩放 · 拖拽：移动',zoom:'缩放',iter:'迭代次数'},ja:{title:'マンデルブロ集合',hint:'🖥️ スクロール：拡大 · ドラッグ：移動',zoom:'ズーム',iter:'反復回数'}};
+        const L=I18N[LANG]||I18N.en;
+        document.getElementById('ttl').innerText=L.title;
+        document.getElementById('hint').innerText=L.hint;
+
+        // --- 着色器代码 ---
+        const vertexShader = `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+
+        const fragmentShader = `
+            precision highp float;
+            varying vec2 vUv;
+            uniform vec2 u_res;
+            uniform vec2 u_center;
+            uniform float u_zoom;
+            uniform int u_iter;
+
+            void main() {
+                // 将 UV 坐标映射到复平面
+                vec2 c = (vUv - 0.5) * vec2(u_res.x / u_res.y, 1.0) * u_zoom + u_center;
+                vec2 z = vec2(0.0);
+                int iter = 0;
+                
+                // 曼德博公式: z = z^2 + c
+                for (int i = 0; i < 1000; i++) {
+                    if (i >= u_iter) break;
+                    float x = z.x * z.x - z.y * z.y + c.x;
+                    float y = 2.0 * z.x * z.y + c.y;
+                    z = vec2(x, y);
+                    if (length(z) > 2.0) break;
+                    iter++;
+                }
+
+                // 简单的着色逻辑
+                if (iter == u_iter) {
+                    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+                } else {
+                    float f = float(iter) / float(u_iter);
+                    gl_FragColor = vec4(
+                        0.5 + 0.5 * cos(3.0 + f * 10.0 + 0.0),
+                        0.5 + 0.5 * cos(3.0 + f * 10.0 + 0.6),
+                        0.5 + 0.5 * cos(3.0 + f * 10.0 + 1.0), 
+                        1.0
+                    );
+                }
+            }
+        `;
+
+        // --- 初始化 Three.js ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+        camera.position.z = 1;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // 控制参数
+        const params = {
+            center: new THREE.Vector2(-0.5, 0),
+            zoom: 2.5,
+            iterations: 256
+        };
+
+        const geometry = new THREE.PlaneGeometry(2, 2);
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                u_res: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                u_center: { value: params.center },
+                u_zoom: { value: params.zoom },
+                u_iter: { value: params.iterations }
+            },
+            vertexShader,
+            fragmentShader
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        // --- 交互逻辑 ---
+        let isDragging = false;
+        let lastMouse = new THREE.Vector2();
+
+        window.addEventListener('wheel', (e) => {
+            const zoomFactor = e.deltaY > 0 ? 1.1 : 0.9;
+            params.zoom *= zoomFactor;
+            // 随着缩放增加迭代次数以保持清晰度
+            params.iterations = Math.min(1000, 256 + Math.floor(-Math.log10(params.zoom) * 150));
+            updateUI();
+        });
+
+        window.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastMouse.set(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = (e.clientX - lastMouse.x) / window.innerWidth;
+            const dy = (e.clientY - lastMouse.y) / window.innerHeight;
+            
+            const aspect = window.innerWidth / window.innerHeight;
+            params.center.x -= dx * params.zoom * aspect;
+            params.center.y += dy * params.zoom;
+            
+            lastMouse.set(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        function updateUI() {
+            document.getElementById('stats').innerText = `${L.zoom}: ${(2.5 / params.zoom).toFixed(1)}x | ${L.iter}: ${params.iterations}`;
+        }
+
+        function animate() {
+            material.uniforms.u_zoom.value = params.zoom;
+            material.uniforms.u_center.value = params.center;
+            material.uniforms.u_iter.value = params.iterations;
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            material.uniforms.u_res.value.set(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>

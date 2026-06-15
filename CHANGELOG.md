@@ -6,6 +6,24 @@ date.
 
 ---
 
+## 2026-06-15 — Add Mandelbrot Set (math) with multilingual embed
+
+**Prompt:** "E:\\GoingGlobal\\Code\\19-LabVivid\\physics\\MandelbrotSet.html Add
+this Mandelbrot Set model (belongs physics or math?). Add multilingual support"
+
+**Changes:**
+- Added the Mandelbrot Set under **Mathematics** (it's a complex-number fractal,
+  not physics). Embedded the self-contained WebGL explorer as
+  `public/mandelbrot.html`.
+- Made the embed multilingual: its overlay/zoom readout now switch via a
+  `?lang=` param (EN/中文/日本語); `EmbedView` gained a `localize` option that
+  passes the app language and remounts the iframe on language change.
+- New model `src/models/mandelbrot.ts` with EN/中文/日本語 metadata, data, and
+  Learn content, plus a 2D escape-time fractal thumbnail for the library card.
+- Full-width layout (like the other embeds); now 48 models total (10 math).
+
+---
+
 ## 2026-06-15 — Replace Black Hole with shader simulation (embedded)
 
 **Prompt:** "Black hole effect not so good, change to this one instead (Remove

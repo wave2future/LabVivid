@@ -47,6 +47,7 @@ import { vectorAddition } from './vectorAddition';
 import { exponential } from './exponential';
 import { linearFunction } from './linearFunction';
 import { normalDistribution } from './normalDistribution';
+import { mandelbrot } from './mandelbrot';
 
 export const models: ModelDefinition[] = [
   projectileMotion,
@@ -90,6 +91,7 @@ export const models: ModelDefinition[] = [
   exponential,
   linearFunction,
   normalDistribution,
+  mandelbrot,
   phScale,
   reactionRate,
   equilibrium,
