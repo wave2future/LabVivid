@@ -171,6 +171,18 @@ input, select, textarea { font-family: inherit; }
 }
 .panel > .panel-body { padding: 14px 16px; }
 
+/* interactive 3D stage */
+.three-stage { position: relative; background: #05070f; border-radius: var(--radius); overflow: hidden; }
+.three-mount { width: 100%; aspect-ratio: 16 / 10; cursor: grab; }
+.three-mount:active { cursor: grabbing; }
+.classroom .three-mount { aspect-ratio: auto; height: 100%; }
+.three-overlay {
+  position: absolute; left: 12px; bottom: 12px; display: flex; align-items: center; gap: 8px;
+  background: color-mix(in srgb, var(--panel) 70%, transparent); padding: 6px 8px;
+  border: 1px solid var(--border); border-radius: 999px; backdrop-filter: blur(8px);
+}
+.three-hint { font-size: 11px; color: var(--text-2); padding-right: 4px; }
+
 .stage { position: relative; background: var(--bg-2); border-radius: var(--radius); overflow: hidden; }
 .stage canvas { width: 100%; display: block; aspect-ratio: 16 / 10; }
 .transport {

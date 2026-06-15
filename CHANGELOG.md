@@ -6,6 +6,28 @@ date.
 
 ---
 
+## 2026-06-15 — Interactive 3D for Solar System & Black Hole
+
+**Prompt:** "solar system and black hole 2d effect is not so good, I want you to
+make them interactive 3d"
+
+**Changes:**
+- Added Three.js and built interactive WebGL views:
+  - `src/components/SolarSystem3D.tsx` — 3D planets on Keplerian orbits, sun
+    glow, starfield, Saturn ring, orbit rings toggle.
+  - `src/components/BlackHole3D.tsx` — 3D event horizon, wireframe photon sphere,
+    and a differentially-rotating, additively-blended accretion disk.
+  - `src/three/orbitControls.ts` — dependency-free mouse/touch orbit controls
+    (drag to rotate, scroll/pinch to zoom).
+- `src/components/custom3d.ts` registry maps these model ids to lazy-loaded 3D
+  views; `ModelPage` renders them (in `<Suspense>`) instead of the 2D `<Stage>`,
+  so Three.js is code-split and only fetched when a 3D model opens.
+- `useSimulation` now recomputes the data panel without a 2D canvas (for custom
+  views). Each 3D view has its own play/pause/reset + a controls hint.
+- The existing 2D renderers are kept for the library-card thumbnails.
+
+---
+
 ## 2026-06-15 — Black hole & solar system simulations
 
 **Prompt:** "Add two more models (black hole simulation, the solar system

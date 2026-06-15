@@ -83,7 +83,7 @@ export const solarSystem: ModelDefinition = {
   controls: [
     { type: 'slider', key: 'timeScale', label: 'Time speed', labelZh: '时间速度', min: 0.1, max: 5, step: 0.1, unit: 'yr/s' },
     { type: 'slider', key: 'planetCount', label: 'Planets shown', labelZh: '显示行星数', min: 2, max: 8, step: 1 },
-    { type: 'toggle', key: 'showLabels', label: 'Show labels', labelZh: '显示名称' },
+    { type: 'toggle', key: 'showLabels', label: 'Show orbit rings', labelZh: '显示轨道环' },
   ],
   defaultVariables: { timeScale: 1, planetCount: 6, showLabels: true },
   presets: [

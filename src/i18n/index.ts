@@ -91,6 +91,7 @@ export const strings: Dict = {
   'notes.delete': { en: 'Delete', zh: '删除', ja: '削除' },
   'notes.saved': { en: 'Experiment saved.', zh: '实验已保存。', ja: '実験を保存しました。' },
 
+  'three.hint': { en: 'Drag to rotate · scroll to zoom', zh: '拖动旋转 · 滚轮缩放', ja: 'ドラッグで回転 · スクロールで拡大縮小' },
   'theme.toggle': { en: 'Toggle theme', zh: '切换主题', ja: 'テーマ切り替え' },
   'lang.label': { en: 'Language', zh: '语言', ja: '言語' },
   'compare.title': { en: 'Compare runs', zh: '对比实验', ja: '実験を比較' },

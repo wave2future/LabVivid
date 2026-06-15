@@ -1,6 +1,6 @@
 // Model page — simulation + controls + data/chart + AI + notes + share
 // (PRD §16.2, FR-005..023).
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getModel } from '../models';
 import { useSimulation } from '../runtime/useSimulation';
@@ -12,6 +12,7 @@ import { Formula } from '../components/Formula';
 import { AIPanel } from '../components/AIPanel';
 import { LearnPanel } from '../components/LearnPanel';
 import { NotesPanel } from '../components/NotesPanel';
+import { custom3D } from '../components/custom3d';
 import { sanitizeVariables, decodeVariables, encodeVariables, buildShareUrl } from '../runtime/urlState';
 import { loadNotes, setLastModel, type ExperimentNote } from '../runtime/notes';
 import { useI18n, pick } from '../i18n';
@@ -112,19 +113,26 @@ function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean 
     return () => document.removeEventListener('fullscreenchange', onFs);
   }, []);
 
+  const Custom = custom3D[model.meta.id];
   const stage = (
     <div ref={stageWrapRef} className={classroom ? 'classroom' : ''}>
       <div className="panel" style={{ overflow: 'hidden' }}>
-        <Stage
-          model={model}
-          canvasRef={sim.canvasRef}
-          playing={sim.playing}
-          computed={sim.computed}
-          onToggle={sim.toggle}
-          onReset={sim.reset}
-          onStep={sim.step}
-          classroom={classroom}
-        />
+        {Custom ? (
+          <Suspense fallback={<div className="three-stage"><div className="three-mount" /></div>}>
+            <Custom vars={vars} isDark={isDark} />
+          </Suspense>
+        ) : (
+          <Stage
+            model={model}
+            canvasRef={sim.canvasRef}
+            playing={sim.playing}
+            computed={sim.computed}
+            onToggle={sim.toggle}
+            onReset={sim.reset}
+            onStep={sim.step}
+            classroom={classroom}
+          />
+        )}
       </div>
       {classroom && (
         <div className="classroom-bar">

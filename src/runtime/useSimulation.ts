@@ -98,9 +98,11 @@ export function useSimulation({ model, vars, isDark }: UseSimulationOptions): Si
   }, [renderFrame]);
 
   // Recompute immediately when variables change (responsive feel, FR-006).
+  // Compute directly so the data panel stays live even for models that render
+  // through a custom view (e.g. 3D) and have no 2D canvas attached.
   useEffect(() => {
-    const result = renderFrame();
-    if (result) setComputed(result);
+    setComputed(modelRef.current.compute(varsRef.current, timeRef.current));
+    renderFrame();
   }, [vars, isDark, renderFrame]);
 
   const play = useCallback(() => setPlaying(true), []);
