@@ -6,6 +6,25 @@ date.
 
 ---
 
+## 2026-06-16 — Fix embedded pages showing the whole app on GitHub Pages
+
+**Prompt:** "The Lorenz Attractor, Wormhole, and Mandelbrot Set models display
+normally locally, but on GitHub Pages … instead of displaying the model content,
+the entire website is embedded."
+
+**Cause:** the PWA service worker's SPA navigation fallback intercepted the
+iframe's request for the standalone `*.html` pages and served the precached
+`index.html` (the whole app) instead — only on the deployed site where the SW is
+active.
+
+**Changes (vite.config.ts workbox):**
+- Added `navigateFallbackDenylist: [/\.html$/]` so the SW never falls back to
+  index.html for the embedded standalone pages.
+- Widened `globPatterns` to precache the embedded pages (blackhole, periodic-table,
+  mandelbrot, lorenz, wormhole) so they load (and work offline) directly.
+
+---
+
 ## 2026-06-15 — Add Lorenz Attractor & Wormhole (physics), multilingual
 
 **Prompts:** "physics\\lorenz.html Add lorenz attractor model with multilingual" /

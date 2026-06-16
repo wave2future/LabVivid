@@ -9,6 +9,15 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
+      workbox: {
+        // Precache the embedded standalone pages too.
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2,ttf}'],
+        // The app uses hash routing, so the SPA navigation fallback must NOT
+        // hijack requests for the embedded standalone .html pages (otherwise the
+        // service worker serves index.html — the whole app — inside the iframe).
+        navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/\.html$/],
+      },
       manifest: {
         name: 'LabVivid - Interactive Science Lab',
         short_name: 'LabVivid',
