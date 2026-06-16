@@ -97,6 +97,18 @@ export function useSimulation({ model, vars, isDark }: UseSimulationOptions): Si
     return () => cancelAnimationFrame(raf);
   }, [renderFrame]);
 
+  // Restart the clock and play state whenever the model changes, so switching
+  // models (even if the host component is reused across navigation) behaves like
+  // a fresh load and animated models start moving immediately.
+  useEffect(() => {
+    timeRef.current = 0;
+    lastComputeForReact.current = 0;
+    setTime(0);
+    setPlaying(model.animated);
+    setComputed(model.compute(varsRef.current, 0));
+    renderFrame();
+  }, [model, renderFrame]);
+
   // Recompute immediately when variables change (responsive feel, FR-006).
   // Compute directly so the data panel stays live even for models that render
   // through a custom view (e.g. 3D) and have no 2D canvas attached.

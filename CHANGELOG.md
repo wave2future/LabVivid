@@ -6,6 +6,18 @@ date.
 
 ---
 
+## 2026-06-16 — Reset simulation clock on model change (hook-level)
+
+**Prompt:** "Ohm's Law Circuit has the same problem"
+
+**Changes:**
+- Added a `useSimulation` effect that resets the animation clock (time → 0) and
+  play state (→ model.animated) whenever the model changes. This fixes the
+  frozen-until-refresh issue at the source for every animated model (Ohm's Law,
+  collisions, pendulum, waves, etc.), independent of how the view is mounted.
+
+---
+
 ## 2026-06-16 — Fix animation freezing when switching models via sidebar
 
 **Prompt:** "When clicking 1D Collisions menu, the two cars do not move. Then I
