@@ -6,6 +6,20 @@ date.
 
 ---
 
+## 2026-06-16 — Make Ohm's Law current flow clearly visible
+
+**Prompt:** "Click Ohm's Law Circuit menu model motion not work still exist"
+
+**Context:** verified the animation fix is deployed (live bundle hash matches the
+local build) and the render logic is correct, so a frozen circuit on the live
+site is a stale cached service worker on the client (needs a hard refresh).
+
+**Changes:**
+- Sped up and brightened the Ohm's Law current-flow dots (faster, more dots, soft
+  glow) so the motion is unmistakable once the latest build is loaded.
+
+---
+
 ## 2026-06-16 — Reset simulation clock on model change (hook-level)
 
 **Prompt:** "Ohm's Law Circuit has the same problem"

@@ -116,17 +116,22 @@ function render(rc: RenderContext): void {
       const b = corners[(seg + 1) % 4];
       perimeterPts.push({ x: a.x + (b.x - a.x) * lf, y: a.y + (b.y - a.y) * lf });
     }
-    const speed = Math.min(1.2, 0.15 + r.I * 0.05);
+    // flow speed scales with current; clearly visible motion
+    const speed = Math.min(3, 0.6 + r.I * 0.25);
     const offset = (r.t * speed * steps) % steps;
-    ctx.fillStyle = '#60a5fa';
-    const dots = 12;
+    const dots = 16;
     for (let d = 0; d < dots; d++) {
       const idx = Math.floor((offset + (d * steps) / dots) % steps);
       const pt = perimeterPts[idx];
+      // brighter leading dots with a soft glow
+      ctx.fillStyle = '#93c5fd';
+      ctx.shadowColor = '#60a5fa';
+      ctx.shadowBlur = 8;
       ctx.beginPath();
-      ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2);
+      ctx.arc(pt.x, pt.y, 4.5, 0, Math.PI * 2);
       ctx.fill();
     }
+    ctx.shadowBlur = 0;
   }
 
   // Readouts
