@@ -35,7 +35,9 @@ export function ModelPage({ isDark }: { isDark: boolean }) {
       </div>
     );
   }
-  return <ModelView model={model} isDark={isDark} />;
+  // key by model id so switching models via the sidebar fully remounts the view
+  // (resets the animation clock / play state) — same as a fresh page load.
+  return <ModelView key={model.meta.id} model={model} isDark={isDark} />;
 }
 
 function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean }) {

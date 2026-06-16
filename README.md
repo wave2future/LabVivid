@@ -30,8 +30,6 @@ charts, and get grounded explanations. Built as the MVP described in
 - **Experiment state & sharing** — parameters serialize into the URL; copy a
   shareable link that restores the exact configuration. Invalid links are
   clamped to safe ranges and fall back gracefully.
-- **AI explanation panel** — optional, non-blocking, grounded in the current
-  model state (currently hidden via `FEATURES.aiExplanation` in `src/config.ts`).
 - **Experiment notes** — save model + parameters + timestamp + observation to
   local storage; restore or delete any saved run.
 - **Cross-platform** — responsive desktop/mobile layouts, touch-friendly
@@ -75,24 +73,6 @@ Implement a `ModelDefinition` (see `src/types/model.ts`) with `compute()` (pure
 derived values + chart) and `render()` (Canvas drawing), then register it in
 `src/models/index.ts`. No other wiring is required — the library, runtime,
 sharing, charts, AI grounding, and notes all work automatically.
-
-## AI explanation
-
-By default the panel uses a **local, deterministic explainer** that references
-only the values currently computed by the model — it never invents numbers
-(PRD §14.2, FR-021). To connect a real LLM, set a runtime config before the app
-loads (e.g. in a small inline script or a wrapper):
-
-```js
-window.__LABVIVID_AI__ = {
-  endpoint: 'https://your-proxy/v1/chat/completions', // OpenAI-compatible
-  apiKey: 'optional-bearer-token',
-  model: 'gpt-4o-mini',
-};
-```
-
-The request uses the grounded prompt shape from PRD §14.3. Any remote failure
-falls back to the local explainer, so the panel is always non-blocking.
 
 ## PRD coverage
 

@@ -6,6 +6,22 @@ date.
 
 ---
 
+## 2026-06-16 — Fix animation freezing when switching models via sidebar
+
+**Prompt:** "When clicking 1D Collisions menu, the two cars do not move. Then I
+click Pause/Play button, not move either. Only moves when I refresh this page."
+
+**Cause:** navigating between models reused the same `ModelView`, so the
+simulation hook kept the previous model's animation clock and play/pause state
+(`useSimulation` never reset them on model change). A fresh page load worked
+because it remounted everything.
+
+**Fix:** key `ModelView` by `model.meta.id` in `ModelPage` so switching models
+fully remounts the view — the animation clock and play state reset exactly like a
+refresh.
+
+---
+
 ## 2026-06-16 — Fix embedded pages showing the whole app on GitHub Pages
 
 **Prompt:** "The Lorenz Attractor, Wormhole, and Mandelbrot Set models display
