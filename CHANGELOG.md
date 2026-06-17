@@ -6,6 +6,27 @@ date.
 
 ---
 
+## 2026-06-17 — Fix localized embeds (?lang=) showing the whole app
+
+**Prompt:** "PeriodicTable.html and blackhole.html display normally, but lorenz,
+MandelbrotSet, and wormhole still display the entire website as an embedded page."
+
+**Cause:** the localized embeds load with a `?lang=` query
+(`mandelbrot.html?lang=en`). The earlier SW navigation-fallback denylist `/\.html$/`
+is anchored at the end, so it matched the query-less embeds (periodic table, black
+hole) but NOT the ones with a query — those still fell back to index.html (the
+app). Precache also missed because `?lang=` wasn't an ignored URL parameter.
+
+**Fix (vite.config.ts workbox):**
+- `navigateFallbackDenylist: [/\.html(?:\?|$)/]` — matches `.html` with or without
+  a query string.
+- `ignoreURLParametersMatching: [/^lang$/]` — so `mandelbrot.html?lang=en` resolves
+  to the precached `mandelbrot.html` (also works offline).
+
+No TSX conversion needed — the embeds were fine; only the SW routing was wrong.
+
+---
+
 ## 2026-06-16 — Make Ohm's Law current flow clearly visible
 
 **Prompt:** "Click Ohm's Law Circuit menu model motion not work still exist"

@@ -12,11 +12,16 @@ export default defineConfig({
       workbox: {
         // Precache the embedded standalone pages too.
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2,ttf}'],
+        // Treat the localized embeds' ?lang= as the same precached file, so
+        // requests like mandelbrot.html?lang=en hit the precache (and work
+        // offline) instead of falling through to the SPA fallback.
+        ignoreURLParametersMatching: [/^lang$/],
         // The app uses hash routing, so the SPA navigation fallback must NOT
         // hijack requests for the embedded standalone .html pages (otherwise the
         // service worker serves index.html — the whole app — inside the iframe).
+        // Match .html with OR without a query string (e.g. ?lang=en).
         navigateFallback: 'index.html',
-        navigateFallbackDenylist: [/\.html$/],
+        navigateFallbackDenylist: [/\.html(?:\?|$)/],
       },
       manifest: {
         name: 'LabVivid - Interactive Science Lab',
