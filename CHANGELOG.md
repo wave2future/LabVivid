@@ -6,6 +6,24 @@ date.
 
 ---
 
+## 2026-06-17 — Mandelbrot Set: pinch-zoom & pan on touch devices
+
+**Prompt:** "Mandelbrot Set should support zoom in or zoom out hand gestures on
+mobile devices"
+
+**Changes:**
+- `public/mandelbrot.html`: added touch handlers alongside the existing
+  mouse/wheel interaction — one finger pans (`params.center`), two fingers
+  pinch to zoom (`applyZoom(pinchDist / dist)`) with the gesture anchored to the
+  pinch midpoint. Listeners use `{ passive: false }` + `e.preventDefault()` so
+  the page doesn't scroll/bounce while interacting; `touchend`/`touchcancel`
+  cleanly resume single-finger panning.
+- Added `html, body, canvas { touch-action: none; overscroll-behavior: none; }`
+  so the browser hands all gestures to the canvas.
+- Updated the localized on-screen hint (en/zh/ja/fr/de/ko/pt) to mention pinch.
+
+---
+
 ## 2026-06-17 — App icon (1024 source → all Tauri icon sizes)
 
 **Prompt:** "Generate an icon with 1024x1024 for this app. Then generate

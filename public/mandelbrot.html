@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Mandelbrot Set</title>
     <style>
+        html, body, canvas { touch-action: none; overscroll-behavior: none; }
         body { margin: 0; overflow: hidden; background: #000; }
         #ui {
             position: absolute; top: 20px; left: 20px;
@@ -26,7 +27,7 @@
     <script type="module">
         import * as THREE from 'three';
         const LANG=new URLSearchParams(location.search).get('lang')||'en';
-        const I18N={en:{title:'Mandelbrot Set',hint:'🖥️ Scroll: zoom · Drag: move',zoom:'Zoom',iter:'Iterations'},zh:{title:'曼德博集合',hint:'🖥️ 滚轮：缩放 · 拖拽：移动',zoom:'缩放',iter:'迭代次数'},ja:{title:'マンデルブロ集合',hint:'🖥️ スクロール：拡大 · ドラッグ：移動',zoom:'ズーム',iter:'反復回数'},fr:{title:'Ensemble de Mandelbrot',hint:'🖥️ Molette : zoom · Glisser : déplacer',zoom:'Zoom',iter:'Itérations'},de:{title:'Mandelbrot-Menge',hint:'🖥️ Scrollen: Zoom · Ziehen: Bewegen',zoom:'Zoom',iter:'Iterationen'},ko:{title:'망델브로 집합',hint:'🖥️ 스크롤: 확대 · 드래그: 이동',zoom:'확대',iter:'반복'},pt:{title:'Conjunto de Mandelbrot',hint:'🖥️ Rolar: zoom · Arrastar: mover',zoom:'Zoom',iter:'Iterações'}};
+        const I18N={en:{title:'Mandelbrot Set',hint:'🖥️ Scroll / pinch: zoom · Drag: move',zoom:'Zoom',iter:'Iterations'},zh:{title:'曼德博集合',hint:'🖥️ 滚轮/双指：缩放 · 拖动：移动',zoom:'缩放',iter:'迭代次数'},ja:{title:'マンデルブロ集合',hint:'🖥️ スクロール/ピンチ：拡大 · ドラッグ：移動',zoom:'ズーム',iter:'反復回数'},fr:{title:'Ensemble de Mandelbrot',hint:'🖥️ Molette / pincer : zoom · Glisser : déplacer',zoom:'Zoom',iter:'Itérations'},de:{title:'Mandelbrot-Menge',hint:'🖥️ Scrollen / Pinch: Zoom · Ziehen: Bewegen',zoom:'Zoom',iter:'Iterationen'},ko:{title:'망델브로 집합',hint:'🖥️ 스크롤/핀치: 확대 · 드래그: 이동',zoom:'확대',iter:'반복'},pt:{title:'Conjunto de Mandelbrot',hint:'🖥️ Rolar / pinça: zoom · Arrastar: mover',zoom:'Zoom',iter:'Iterações'}};
         const L=I18N[LANG]||I18N.en;
         document.getElementById('ttl').innerText=L.title;
         document.getElementById('hint').innerText=L.hint;
@@ -140,6 +141,59 @@
         });
 
         window.addEventListener('mouseup', () => isDragging = false);
+
+        // --- Touch: one finger pans, two fingers pinch-zoom ---
+        let pinchDist = 0;
+        const touchMid = new THREE.Vector2();
+        const applyZoom = (factor) => {
+            params.zoom *= factor;
+            params.iterations = Math.min(1000, 256 + Math.floor(-Math.log10(params.zoom) * 150));
+            updateUI();
+        };
+        window.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                lastMouse.set(e.touches[0].clientX, e.touches[0].clientY);
+            } else if (e.touches.length === 2) {
+                isDragging = false;
+                const a = e.touches[0], b = e.touches[1];
+                pinchDist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+                touchMid.set((a.clientX + b.clientX) / 2, (a.clientY + b.clientY) / 2);
+            }
+        }, { passive: false });
+        window.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const aspect = window.innerWidth / window.innerHeight;
+            if (e.touches.length === 1 && isDragging) {
+                const t = e.touches[0];
+                const dx = (t.clientX - lastMouse.x) / window.innerWidth;
+                const dy = (t.clientY - lastMouse.y) / window.innerHeight;
+                params.center.x -= dx * params.zoom * aspect;
+                params.center.y += dy * params.zoom;
+                lastMouse.set(t.clientX, t.clientY);
+            } else if (e.touches.length === 2) {
+                const a = e.touches[0], b = e.touches[1];
+                const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+                const mx = (a.clientX + b.clientX) / 2, my = (a.clientY + b.clientY) / 2;
+                if (pinchDist > 0) applyZoom(pinchDist / dist); // fingers apart -> zoom in
+                // pan with the pinch midpoint so zoom feels anchored
+                const dx = (mx - touchMid.x) / window.innerWidth;
+                const dy = (my - touchMid.y) / window.innerHeight;
+                params.center.x -= dx * params.zoom * aspect;
+                params.center.y += dy * params.zoom;
+                pinchDist = dist;
+                touchMid.set(mx, my);
+            }
+        }, { passive: false });
+        const endTouch = (e) => {
+            if (e.touches.length === 0) { isDragging = false; pinchDist = 0; }
+            else if (e.touches.length === 1) {
+                pinchDist = 0; isDragging = true;
+                lastMouse.set(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        };
+        window.addEventListener('touchend', endTouch);
+        window.addEventListener('touchcancel', endTouch);
 
         function updateUI() {
             document.getElementById('stats').innerText = `${L.zoom}: ${(2.5 / params.zoom).toFixed(1)}x | ${L.iter}: ${params.iterations}`;
