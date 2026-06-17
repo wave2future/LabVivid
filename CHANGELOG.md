@@ -6,6 +6,34 @@ date.
 
 ---
 
+## 2026-06-17 — Add Spanish, Arabic & Russian language support
+
+**Prompt:** "Add Spanish, Arabic, Russian language support"
+
+**Changes:**
+- `src/i18n/index.ts`: added `es`, `ar`, `ru` to the `Lang` type and `LANGS`
+  (so they appear in the language selector) and translated every UI string into
+  Spanish, Arabic, and Russian. Added an `isRTL`/`RTL_LANGS` helper.
+- `src/App.tsx`: reflect the active language on `<html lang>` and set
+  `dir="rtl"` for Arabic (and any future RTL locale), `ltr` otherwise.
+- `src/index.css`: RTL overrides — sidebar border side, active-link accent bar,
+  Learn-tip indent, floating 3D overlay anchoring, and the mobile drawer now
+  slides in from the right under `[dir="rtl"]`.
+- `src/i18n/modelText.ts`: extended `NewLang` with `es`/`ar`/`ru` and made each
+  language optional per model (`Partial<Record<…>>`), so model-specific Learn
+  text gracefully falls back to English for locales not yet translated.
+- Embedded pages localized for the three new languages: `mandelbrot.html`,
+  `blackhole.html`, `lorenz.html`, `wormhole.html`, and `periodic-table.html`
+  (UI chrome translated; element names/facts fall back to English via `null`).
+- `README.md`: localization note now lists 10 languages and the Arabic RTL layout.
+
+Note: UI chrome, the language picker, RTL layout, and the embeds are fully
+localized. Model-specific Learn text (intro/principle/tips) for es/ar/ru falls
+back to English for now — same staged approach used for fr/de/ko/pt, whose
+model text was translated in a dedicated follow-up pass.
+
+---
+
 ## 2026-06-17 — Mandelbrot Set: pinch-zoom & pan on touch devices
 
 **Prompt:** "Mandelbrot Set should support zoom in or zoom out hand gestures on

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { I18nContext, translate, LANGS, type Lang } from './i18n';
+import { I18nContext, translate, LANGS, isRTL, type Lang } from './i18n';
 import { LibraryPage } from './pages/LibraryPage';
 import { ModelPage } from './pages/ModelPage';
 import { Sidebar } from './components/Sidebar';
@@ -24,6 +24,13 @@ export default function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  // Reflect the active language on <html> and switch document direction so
+  // Arabic (and any future RTL locale) lays out right-to-left.
+  useEffect(() => {
+    document.documentElement.setAttribute('lang', lang);
+    document.documentElement.setAttribute('dir', isRTL(lang) ? 'rtl' : 'ltr');
+  }, [lang]);
 
   const t = useCallback((key: string, fallback?: string) => translate(lang, key, fallback), [lang]);
 

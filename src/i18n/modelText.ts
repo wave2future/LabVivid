@@ -1,11 +1,12 @@
 // Model-specific text (title, description, Learn intro/principle/tips) for the
-// languages added after the models were authored: fr, de, ko, pt.
+// languages added after the models were authored: fr, de, ko, pt, es, ar, ru.
 // English/Chinese/Japanese live on the model definitions themselves; this map
-// supplies the four newer languages, with English as the fallback.
+// supplies the newer languages, with English as the fallback. Each language is
+// optional per model — missing translations fall back to English.
 import type { Lang } from './index';
 import type { ModelDefinition } from '../types/model';
 
-type NewLang = 'fr' | 'de' | 'ko' | 'pt';
+type NewLang = 'fr' | 'de' | 'ko' | 'pt' | 'es' | 'ar' | 'ru';
 export interface MLEntry {
   title: string;
   description: string;
@@ -14,7 +15,7 @@ export interface MLEntry {
   tips: string[];
 }
 
-export const modelText: Record<string, Record<NewLang, MLEntry>> = {};
+export const modelText: Record<string, Partial<Record<NewLang, MLEntry>>> = {};
 
 export function tModelTitle(lang: Lang, m: ModelDefinition): string {
   if (lang === 'zh') return m.meta.titleZh;

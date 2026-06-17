@@ -37,7 +37,7 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         const LANG=new URLSearchParams(location.search).get('lang')||'en';
-        const I18N={en:{title:'Wormhole Explorer',sub:'Click and drag to rotate • Scroll to zoom'},zh:{title:'虫洞探索器',sub:'拖动旋转 • 滚轮缩放'},ja:{title:'ワームホール・エクスプローラー',sub:'ドラッグで回転 • スクロールで拡大縮小'},fr:{title:'Explorateur de trou de ver',sub:'Cliquez-glissez pour pivoter • molette pour zoomer'},de:{title:'Wurmloch-Explorer',sub:'Klicken und ziehen zum Drehen • Scrollen zum Zoomen'},ko:{title:'웜홀 탐색기',sub:'클릭 드래그로 회전 • 스크롤로 확대/축소'},pt:{title:'Explorador de buraco de minhoca',sub:'Clique e arraste para girar • role para ampliar'}};
+        const I18N={en:{title:'Wormhole Explorer',sub:'Click and drag to rotate • Scroll to zoom'},zh:{title:'虫洞探索器',sub:'拖动旋转 • 滚轮缩放'},ja:{title:'ワームホール・エクスプローラー',sub:'ドラッグで回転 • スクロールで拡大縮小'},fr:{title:'Explorateur de trou de ver',sub:'Cliquez-glissez pour pivoter • molette pour zoomer'},de:{title:'Wurmloch-Explorer',sub:'Klicken und ziehen zum Drehen • Scrollen zum Zoomen'},ko:{title:'웜홀 탐색기',sub:'클릭 드래그로 회전 • 스크롤로 확대/축소'},pt:{title:'Explorador de buraco de minhoca',sub:'Clique e arraste para girar • role para ampliar'},es:{title:'Explorador de agujero de gusano',sub:'Clic y arrastra para girar • desplaza para ampliar'},ar:{title:'مستكشف الثقب الدودي',sub:'انقر واسحب للتدوير • مرّر للتكبير'},ru:{title:'Исследователь червоточины',sub:'Нажмите и перетащите для вращения • колесо для масштаба'}};
         const L=I18N[LANG]||I18N.en;
         document.getElementById('ttl').innerText=L.title;
         document.getElementById('sub').innerText=L.sub;

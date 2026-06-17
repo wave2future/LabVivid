@@ -36,8 +36,9 @@ Inspired by PhET. Coded by Claude.
   local storage; restore or delete any saved run.
 - **Cross-platform** — responsive desktop/mobile layouts, touch-friendly
   controls, classroom (full-screen) mode, screenshot export, PWA offline
-  support, localization in 7 languages (English, 中文, 日本語, Français, Deutsch,
-  한국어, Português), and light/dark themes.
+  support, localization in 10 languages (English, 中文, 日本語, Français, Deutsch,
+  한국어, Português, Español, العربية with full right-to-left layout, Русский),
+  and light/dark themes.
 
 ## Tech stack
 

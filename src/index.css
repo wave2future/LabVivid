@@ -354,3 +354,19 @@ input[type='range']::-moz-range-thumb {
 @media (min-width: 861px) {
   .mobile-only { display: none !important; }
 }
+
+/* ---------- RTL (Arabic) ---------- */
+[dir="rtl"] .sidebar { border-right: none; border-left: 1px solid var(--border); }
+/* Active-link accent bar moves to the right edge in RTL. */
+[dir="rtl"] .side-link { padding: 8px 28px 8px 12px; }
+[dir="rtl"] .side-link.active::before { left: auto; right: 12px; }
+/* Bulleted Learn tips indent from the right. */
+[dir="rtl"] .learn-tips { padding-left: 0; padding-right: 18px; }
+/* Floating overlays anchored to the left flip to the right. */
+[dir="rtl"] .three-controls { left: auto; right: 12px; }
+[dir="rtl"] .three-hint { padding-right: 0; padding-left: 4px; }
+/* Mobile drawer slides in from the right. */
+@media (max-width: 860px) {
+  [dir="rtl"] .sidebar { left: auto; right: 0; transform: translateX(100%); }
+  [dir="rtl"] .sidebar.open { transform: translateX(0); }
+}
