@@ -52,9 +52,11 @@ import { normalDistribution } from './normalDistribution';
 import { mandelbrot } from './mandelbrot';
 
 export const models: ModelDefinition[] = [
+  blackHole,
   projectileMotion,
   functionTransform,
   ohmsLaw,
+  periodicTable,
   titration,
   pendulum,
   springSHM,
@@ -79,7 +81,6 @@ export const models: ModelDefinition[] = [
   friction,
   heatingCurve,
   solarSystem,
-  blackHole,
   lorenz,
   wormhole,
   idealGas,
@@ -101,7 +102,6 @@ export const models: ModelDefinition[] = [
   equilibrium,
   beerLambert,
   radioactiveDecay,
-  periodicTable,
 ];
 
 export function getModel(id: string): ModelDefinition | undefined {

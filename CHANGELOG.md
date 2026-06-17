@@ -6,6 +6,18 @@ date.
 
 ---
 
+## 2026-06-17 — Reorder: Black Hole first in Physics, Periodic Table first in Chemistry
+
+**Prompt:** "put Black Hole to the first of Physics, put Periodic Table to the
+first of CHEMISTRY"
+
+**Changes:**
+- Reordered the `models` registry so `blackHole` leads the Physics group and
+  `periodicTable` leads the Chemistry group (the sidebar and library preserve the
+  registry order within each subject).
+
+---
+
 ## 2026-06-17 — Fix localized embeds (?lang=) showing the whole app
 
 **Prompt:** "PeriodicTable.html and blackhole.html display normally, but lorenz,
