@@ -6,6 +6,18 @@ date.
 
 ---
 
+## 2026-06-17 — Fix inclined-plane block orientation
+
+**Prompt:** "The orange block on the inclined plane should be parallel to the
+inclined plane, but … it is currently intersecting (crossing) it."
+
+**Changes:**
+- The block was rotated by −θ, tilting it opposite to the surface (which descends
+  to the right) so it crossed the ramp. Rotated it by +θ so its base lies flush
+  along the incline.
+
+---
+
 ## 2026-06-17 — New library thumbnails for Black Hole & Mandelbrot
 
 **Prompt:** "Change Home page grid image of Black Hole and Mandelbrot Set"

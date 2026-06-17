@@ -79,7 +79,7 @@ function render(rc: RenderContext): void {
   const size = 30;
   ctx.save();
   ctx.translate(bx, by);
-  ctx.rotate(-r.angle); // align block to the slope
+  ctx.rotate(r.angle); // align block to the slope (surface descends to the right)
   ctx.fillStyle = '#fbbf24';
   ctx.fillRect(-size / 2, -size, size, size);
   ctx.restore();
