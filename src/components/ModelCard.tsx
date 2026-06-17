@@ -2,7 +2,8 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import type { ModelDefinition } from '../types/model';
-import { useI18n, pick } from '../i18n';
+import { useI18n } from '../i18n';
+import { tModelTitle, tModelDesc } from '../i18n/modelText';
 
 const SUBJECT_COLOR: Record<string, string> = {
   physics: '#5eead4', chemistry: '#a78bfa', math: '#f472b6',
@@ -38,8 +39,8 @@ export function ModelCard({ model, isDark }: { model: ModelDefinition; isDark: b
           <span className="subject-dot" style={{ background: SUBJECT_COLOR[model.meta.subject] }} />
           {t(`subject.${model.meta.subject}`)} · {t(`difficulty.${model.meta.difficulty}`)}
         </div>
-        <h3>{pick(lang, model.meta.title, model.meta.titleZh, model.meta.titleJa)}</h3>
-        <div className="desc">{pick(lang, model.meta.description, model.meta.descriptionZh, model.meta.descriptionJa)}</div>
+        <h3>{tModelTitle(lang, model)}</h3>
+        <div className="desc">{tModelDesc(lang, model)}</div>
         <div className="tags">
           {model.meta.tags.slice(0, 3).map((tag) => <span className="tag" key={tag}>{tag}</span>)}
         </div>

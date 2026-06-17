@@ -15,7 +15,8 @@ import { NotesPanel } from '../components/NotesPanel';
 import { custom3D } from '../components/custom3d';
 import { sanitizeVariables, decodeVariables, encodeVariables, buildShareUrl } from '../runtime/urlState';
 import { loadNotes, setLastModel, type ExperimentNote } from '../runtime/notes';
-import { useI18n, pick } from '../i18n';
+import { useI18n } from '../i18n';
+import { tModelTitle } from '../i18n/modelText';
 import { FEATURES } from '../config';
 import type { Variables, Preset, ModelDefinition } from '../types/model';
 
@@ -152,7 +153,7 @@ function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean 
     <div className="container">
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
         <Link className="iconbtn" to="/">← {t('nav.back')}</Link>
-        <h2 style={{ margin: 0, fontSize: 20 }}>{pick(lang, model.meta.title, model.meta.titleZh, model.meta.titleJa)}</h2>
+        <h2 style={{ margin: 0, fontSize: 20 }}>{tModelTitle(lang, model)}</h2>
         <span style={{ flex: 1 }} />
         <button className="iconbtn" onClick={share}>🔗 {t('share.share')}</button>
         <button className="iconbtn" onClick={screenshot}>📷 {t('share.screenshot')}</button>
@@ -217,7 +218,7 @@ function ModelView({ model, isDark }: { model: ModelDefinition; isDark: boolean 
           {model.learn && (
             <div className={`panel${mobileTab !== 'learn' ? ' mobile-hidden' : ''}`} data-tab="learn">
               <div className="panel-head">{t('panel.learn')}</div>
-              <LearnPanel learn={model.learn} />
+              <LearnPanel model={model} />
             </div>
           )}
 

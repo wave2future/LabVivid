@@ -5,7 +5,8 @@ import { models } from '../models';
 import { ModelCard } from '../components/ModelCard';
 import { getLastModel } from '../runtime/notes';
 import { getModel } from '../models';
-import { useI18n, pick } from '../i18n';
+import { useI18n } from '../i18n';
+import { tModelTitle } from '../i18n/modelText';
 import type { Subject } from '../types/model';
 
 const SUBJECTS: (Subject | 'all')[] = ['all', 'physics', 'chemistry', 'math', 'biology'];
@@ -43,7 +44,7 @@ export function LibraryPage({ isDark }: { isDark: boolean }) {
         <div className="recent-banner">
           <span style={{ fontSize: 13, color: 'var(--text-2)' }}>
             {t('lib.recent')}: <strong style={{ color: 'var(--text)' }}>
-              {pick(lang, lastModel.meta.title, lastModel.meta.titleZh, lastModel.meta.titleJa)}
+              {tModelTitle(lang, lastModel)}
             </strong>
           </span>
           <span style={{ flex: 1 }} />

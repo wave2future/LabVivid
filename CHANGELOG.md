@@ -6,6 +6,24 @@ date.
 
 ---
 
+## 2026-06-17 — Translate model text (FR/DE/KO/PT)
+
+**Prompt (/goal):** "Translate model-specific text for Français, Deutsch, 한국어,
+Português languages"
+
+**Changes:**
+- Added `src/i18n/modelText.ts`: a central, model-id-keyed map of French, German,
+  Korean, and Portuguese text (title, description, and Learn intro/principle/tips)
+  for all 50 models, with helpers `tModelTitle`, `tModelDesc`, `tLearn`
+  (English/Chinese/Japanese still come from the model definitions; English is the
+  fallback).
+- Rewired Sidebar, ModelCard, ModelPage header, LibraryPage, Stage, and LearnPanel
+  to use these helpers, so model titles, descriptions, and Learn panels now display
+  in the selected language for all 7 languages.
+- Verified 0 missing entries across the 50 models × 4 new languages.
+
+---
+
 ## 2026-06-17 — Add French, German, Korean, Portuguese
 
 **Prompt:** "Add multilingual support: French, German, Korean, Portuguese"

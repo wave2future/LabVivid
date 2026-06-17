@@ -1,7 +1,8 @@
 // Presentational simulation stage + transport controls (FR-007/008).
 import type { RefObject } from 'react';
 import type { ModelDefinition, ComputeResult } from '../types/model';
-import { useI18n, pick } from '../i18n';
+import { useI18n } from '../i18n';
+import { tModelTitle } from '../i18n/modelText';
 
 interface Props {
   model: ModelDefinition;
@@ -18,7 +19,7 @@ export function Stage({ model, canvasRef, playing, computed, onToggle, onReset, 
   const { t, lang } = useI18n();
   return (
     <div className="stage">
-      <canvas ref={canvasRef} aria-label={pick(lang, model.meta.title, model.meta.titleZh, model.meta.titleJa)} />
+      <canvas ref={canvasRef} aria-label={tModelTitle(lang, model)} />
       {classroom && (
         <div style={{ position: 'absolute', top: 16, left: 16 }} className="big-data">
           {computed.data.slice(0, 3).map((d) => (

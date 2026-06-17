@@ -3,7 +3,8 @@
 // hamburger button in the top bar.
 import { NavLink } from 'react-router-dom';
 import { models } from '../models';
-import { useI18n, pick } from '../i18n';
+import { useI18n } from '../i18n';
+import { tModelTitle } from '../i18n/modelText';
 import type { Subject } from '../types/model';
 
 const SUBJECT_ORDER: Subject[] = ['physics', 'chemistry', 'math', 'biology', 'engineering'];
@@ -45,7 +46,7 @@ export function Sidebar({ open, onClose }: Props) {
                     className={({ isActive }) => `side-link${isActive ? ' active' : ''}`}
                     onClick={onClose}
                   >
-                    {pick(lang, m.meta.title, m.meta.titleZh, m.meta.titleJa)}
+                    {tModelTitle(lang, m)}
                   </NavLink>
                 </li>
               ))}
