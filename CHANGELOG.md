@@ -6,6 +6,20 @@ date.
 
 ---
 
+## 2026-06-17 — Packaging tutorial (Windows / macOS / Android / iOS)
+
+**Prompt:** "How to package it into a Windows installer? Write a tutorial on
+packaging Windows/Mac/Android/iOS platforms in README.md"
+
+**Changes:**
+- Added a "Packaging" section to `README.md`: Tauri for Windows/macOS desktop
+  installers (.msi/.exe, .dmg/.app) and Capacitor for Android/iOS, with
+  prerequisites, setup commands, build steps, and output paths. Notes that the
+  relative base + hash routing already make the build packaging-ready, and that
+  the PWA is the zero-tooling install option.
+
+---
+
 ## 2026-06-17 — Fix inclined-plane block orientation
 
 **Prompt:** "The orange block on the inclined plane should be parallel to the

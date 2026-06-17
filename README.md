@@ -55,6 +55,112 @@ npm run build      # type-check + production build to dist/
 npm run preview    # serve the production build
 ```
 
+## Packaging (Windows / macOS / Android / iOS)
+
+LabVivid is a static web build (`dist/`). It's already packaging-friendly: Vite
+uses a **relative base** (`base: './'`) and the app uses **hash routing**, so the
+build runs correctly from `file://`, a desktop webview, or a mobile shell — no
+server required.
+
+The quickest "install" with **zero extra tooling** is the built-in **PWA**: open
+the deployed site, then use the browser's *Install app* / *Add to Home Screen*.
+For real native installers/packages, use Tauri (desktop) and Capacitor (mobile).
+
+> Build the web app first whenever you package: `npm run build` (outputs `dist/`).
+
+### Desktop — Windows & macOS with Tauri (recommended)
+
+Tauri wraps the web build in the OS's native webview, producing a small installer
+(~3–10 MB) instead of bundling a whole browser like Electron.
+
+**Prerequisites**
+- **Node 20+** and **Rust** (install via <https://rustup.rs>).
+- **Windows:** "Desktop development with C++" (MSVC) from the Visual Studio Build
+  Tools, plus **WebView2** (preinstalled on Windows 10/11).
+- **macOS:** Xcode Command Line Tools (`xcode-select --install`).
+- You must build each installer **on its own OS** (Windows `.msi`/`.exe` on
+  Windows; macOS `.dmg`/`.app` on a Mac).
+
+**One-time setup**
+```bash
+npm install -D @tauri-apps/cli
+npx tauri init
+```
+Answer the prompts so Tauri uses this project's web build:
+- App name: `LabVivid`  ·  Window title: `LabVivid`
+- Web assets (frontendDist), relative to `src-tauri`: `../dist`
+- Dev server URL (devUrl): `http://localhost:5173`
+- Before-dev command: `npm run dev`  ·  Before-build command: `npm run build`
+
+Then set a bundle identifier in `src-tauri/tauri.conf.json`:
+```jsonc
+{
+  "productName": "LabVivid",
+  "identifier": "io.github.wave2future.labvivid",
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5173"
+  },
+  "bundle": { "active": true, "targets": "all", "icon": ["icons/icon.png"] }
+}
+```
+
+**Develop & build**
+```bash
+npx tauri dev      # run the app in a native window
+npx tauri build    # produce the installer(s)
+```
+
+**Output**
+- Windows: `src-tauri/target/release/bundle/msi/LabVivid_x.y.z_x64_en-US.msi`
+  and `.../bundle/nsis/LabVivid_x.y.z_x64-setup.exe`.
+- macOS: `src-tauri/target/release/bundle/dmg/LabVivid_x.y.z_aarch64.dmg`
+  and `.../bundle/macos/LabVivid.app`.
+
+> Code signing is optional for local use but recommended for distribution
+> (Windows: a code-signing certificate; macOS: an Apple Developer ID + notarization).
+> *(Alternative: Electron via `electron-builder` also works but yields much larger
+> installers.)*
+
+### Mobile — Android & iOS with Capacitor
+
+Capacitor loads the same `dist/` inside a native WebView and gives you real
+Android/iOS projects to build and sign.
+
+**One-time setup**
+```bash
+npm install @capacitor/core
+npm install -D @capacitor/cli
+npx cap init LabVivid io.github.wave2future.labvivid --web-dir dist
+npm install @capacitor/android @capacitor/ios
+npm run build
+npx cap add android
+npx cap add ios        # macOS only
+```
+
+**After every web change**, rebuild and copy the assets into the native projects:
+```bash
+npm run build && npx cap sync
+```
+
+**Android** (Windows, macOS, or Linux)
+- Prerequisites: **Android Studio** + **JDK 17**.
+- `npx cap open android` opens the project in Android Studio.
+- Debug APK: **Build → Build Bundle(s) / APK(s) → Build APK(s)**.
+- Release for the Play Store: **Build → Generate Signed Bundle / APK** → create a
+  keystore → produce a signed `.aab` (or `.apk`).
+
+**iOS** (macOS only)
+- Prerequisites: **Xcode** and an **Apple Developer account** (for devices/store).
+- `npx cap open ios` opens the workspace in Xcode.
+- Select your signing **Team** under *Signing & Capabilities*, pick a device, then
+  **Product → Archive** → *Distribute App* to export an `.ipa`.
+
+> Tip: inside a packaged shell the app already runs fully offline. The service
+> worker is harmless there; if you prefer, you can disable PWA registration for
+> native builds since the shell serves the assets locally.
+
 ## Project structure
 
 ```
