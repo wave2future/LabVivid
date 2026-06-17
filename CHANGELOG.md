@@ -6,6 +6,21 @@ date.
 
 ---
 
+## 2026-06-17 — App icon (1024 source → all Tauri icon sizes)
+
+**Prompt:** "Generate an icon with 1024x1024 for this app. Then generate
+different sizes in src-tauri\\icons directory and replace these default icon."
+
+**Changes:**
+- Designed a 1024×1024 LabVivid logo (teal flask + bubbles on a dark rounded
+  square) as `assets/icon.svg` → `assets/icon-1024.png`.
+- Ran `tauri icon` to regenerate the full `src-tauri/icons` set from it (desktop
+  `icon.ico`/`icon.icns`/PNGs, Windows Store `Square*Logo`, and iOS/Android icon
+  sets), replacing the Tauri defaults. Regenerate anytime with
+  `npx tauri icon assets/icon-1024.png`.
+
+---
+
 ## 2026-06-17 — Packaging tutorial (Windows / macOS / Android / iOS)
 
 **Prompt:** "How to package it into a Windows installer? Write a tutorial on
