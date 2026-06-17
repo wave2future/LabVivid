@@ -6,6 +6,23 @@ date.
 
 ---
 
+## 2026-06-17 — Translate all model text into Spanish, Arabic & Russian
+
+**Prompt:** "OK, go on with model text"
+
+**Changes:**
+- `src/i18n/modelText.ts`: added Spanish (es), Arabic (ar) and Russian (ru)
+  title/description/Learn (intro · principle · tips) for all 50 models, bringing
+  the new locales to parity with fr/de/ko/pt. The translations live in a separate
+  `esArRu` map that is merged into the existing entries at module load, so the
+  earlier fr/de/ko/pt text is untouched.
+- Verified headless that every model now resolves all seven newer languages
+  (fr/de/ko/pt/es/ar/ru) with no gaps; the Learn panel, library cards, sidebar,
+  and model header all pick these up automatically via `tModelTitle`/`tModelDesc`/
+  `tLearn`.
+
+---
+
 ## 2026-06-17 — Add Spanish, Arabic & Russian language support
 
 **Prompt:** "Add Spanish, Arabic, Russian language support"
