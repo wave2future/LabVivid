@@ -6,6 +6,18 @@ date.
 
 ---
 
+## 2026-06-17 — Black Hole overlay follows site language
+
+**Prompt:** "Black Hole model multilingual support: Drag to rotate Scroll to zoom"
+
+**Changes:**
+- Localized the Black Hole overlay hint ("Drag to rotate · Scroll to zoom") into
+  EN/中文/日本語; `public/blackhole.html` reads `?lang=` and sets the hint.
+- Marked the black-hole embed as localized so it receives the site language and
+  remounts on language change.
+
+---
+
 ## 2026-06-17 — Periodic Table: fit to area (no scroll) + follow site language
 
 **Prompts:** "Adjust Periodic Table size to avoid scroll bar … shrink elements to

@@ -19,7 +19,19 @@
     </style>
 </head>
 <body>
-    <div id="info"><p>Drag to rotate &middot; Scroll to zoom</p></div>
+    <div id="info"><p id="hint">Drag to rotate &middot; Scroll to zoom</p></div>
+    <script>
+      (function () {
+        var L = new URLSearchParams(location.search).get('lang') || 'en';
+        var H = {
+          en: 'Drag to rotate · Scroll to zoom',
+          zh: '拖动旋转 · 滚轮缩放',
+          ja: 'ドラッグで回転 · スクロールで拡大縮小'
+        };
+        var el = document.getElementById('hint');
+        if (el) el.textContent = H[L] || H.en;
+      })();
+    </script>
 
     <!-- 引入 Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
