@@ -1,6 +1,5 @@
 // Physics: Black Hole simulation (Schwarzschild radius, photon sphere, accretion disk).
 import type { ModelDefinition, Variables, ComputeResult, RenderContext } from '../types/model';
-import { label } from './canvasUtils';
 
 // Schwarzschild radius of the Sun ≈ 2.95 km, so Rs ≈ 2.95·M (M in solar masses).
 const RS_PER_SOLAR = 2.95;
@@ -29,56 +28,49 @@ function compute(vars: Variables, t: number): ComputeResult {
 // deterministic pseudo-random in [0,1)
 function rand(i: number) { return Math.abs((Math.sin(i * 127.1 + 311.7) * 43758.5453) % 1); }
 
+// Library-card thumbnail: an "Interstellar"-style lensed black hole.
 function render(rc: RenderContext): void {
-  const { ctx, width: w, height: h, computed } = rc;
-  // black holes look best on a dark field regardless of theme
-  ctx.fillStyle = '#05070f'; ctx.fillRect(0, 0, w, h);
-  const r = computed.render;
-  const cx = w / 2, cy = h / 2;
-  const maxR = Math.min(w, h) * 0.46;
-  // event-horizon visual radius grows with log(mass) but stays framed
-  const rsPx = Math.max(16, Math.min(maxR * 0.42, 14 + Math.log(r.M + 1) * 16));
-
-  // accretion disk: particles orbiting Keplerian-style (faster nearer in)
-  const inner = rsPx * 1.6, outer = maxR;
-  const N = 260;
-  for (let i = 0; i < N; i++) {
-    const fr = rand(i);
-    const rad = inner + fr * (outer - inner);
-    const omega = 1.4 * Math.pow(rsPx / rad, 1.5);
-    const ang = rand(i + 99) * Math.PI * 2 + omega * r.t * 3;
-    // slight ellipse to suggest a tilted disk
-    const x = cx + rad * Math.cos(ang);
-    const y = cy + rad * 0.35 * Math.sin(ang);
-    // colour: hot/white near the horizon → orange/red outwards
-    const heat = 1 - (rad - inner) / (outer - inner);
-    const cr = 255, cg = Math.round(120 + heat * 135), cb = Math.round(40 + heat * 160);
-    ctx.fillStyle = `rgba(${cr},${cg},${cb},${0.5 + heat * 0.5})`;
-    ctx.beginPath(); ctx.arc(x, y, 1.6 + heat * 1.8, 0, Math.PI * 2); ctx.fill();
+  const { ctx, width: w, height: h } = rc;
+  ctx.fillStyle = '#04060d'; ctx.fillRect(0, 0, w, h);
+  // starfield
+  for (let i = 0; i < 80; i++) {
+    const sx = rand(i) * w, sy = rand(i + 60) * h, b = 0.25 + rand(i + 130) * 0.6;
+    ctx.fillStyle = `rgba(200,212,238,${b})`;
+    ctx.fillRect(sx, sy, 1.2, 1.2);
   }
+  const cx = w / 2, cy = h / 2;
+  const rs = Math.min(w, h) * 0.17;
 
-  // photon sphere ring (1.5 Rs)
-  ctx.strokeStyle = 'rgba(125,211,252,0.7)'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 5]);
-  ctx.beginPath(); ctx.arc(cx, cy, rsPx * 1.5, 0, Math.PI * 2); ctx.stroke();
-  ctx.setLineDash([]);
+  // accretion disk: flat elliptical glow behind the hole
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(1, 0.26);
+  const g = ctx.createRadialGradient(0, 0, rs * 1.02, 0, 0, rs * 3.6);
+  g.addColorStop(0, 'rgba(255,255,255,0.95)');
+  g.addColorStop(0.16, 'rgba(255,214,150,0.95)');
+  g.addColorStop(0.45, 'rgba(255,140,55,0.7)');
+  g.addColorStop(1, 'rgba(120,40,20,0)');
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.arc(0, 0, rs * 3.6, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
 
-  // glowing photon ring just outside the horizon
-  const ring = ctx.createRadialGradient(cx, cy, rsPx, cx, cy, rsPx * 1.5);
-  ring.addColorStop(0, 'rgba(255,200,120,0.0)');
-  ring.addColorStop(0.7, 'rgba(255,180,90,0.5)');
-  ring.addColorStop(1, 'rgba(255,180,90,0)');
-  ctx.fillStyle = ring;
-  ctx.beginPath(); ctx.arc(cx, cy, rsPx * 1.5, 0, Math.PI * 2); ctx.fill();
+  // gravitationally-lensed arc rising over the top of the hole
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = 'rgba(255,226,170,0.9)';
+  ctx.lineWidth = Math.max(2, rs * 0.18);
+  ctx.beginPath(); ctx.ellipse(0, 0, rs * 1.5, rs * 1.42, 0, Math.PI * 1.04, Math.PI * 1.96); ctx.stroke();
+  ctx.restore();
 
-  // event horizon (pure black with a thin rim)
+  // event horizon (pure black)
   ctx.fillStyle = '#000';
-  ctx.beginPath(); ctx.arc(cx, cy, rsPx, 0, Math.PI * 2); ctx.fill();
-  ctx.strokeStyle = 'rgba(255,200,120,0.6)'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.arc(cx, cy, rsPx, 0, Math.PI * 2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx, cy, rs, 0, Math.PI * 2); ctx.fill();
 
-  ctx.fillStyle = '#cbd5e1'; ctx.font = '11px system-ui'; ctx.textAlign = 'center';
-  ctx.fillText('photon sphere', cx, cy - rsPx * 1.5 - 6);
-  label(ctx, `${r.M.toFixed(0)} M☉ · event horizon Rs = ${r.Rs.toFixed(1)} km`, w / 2, h - 12, '#e2e8f0', 'bold 13px system-ui', 'center');
+  // bright photon ring just outside the horizon
+  ctx.strokeStyle = 'rgba(255,236,202,0.95)';
+  ctx.lineWidth = Math.max(1.5, rs * 0.08);
+  ctx.beginPath(); ctx.arc(cx, cy, rs * 1.06, 0, Math.PI * 2); ctx.stroke();
 }
 
 export const blackHole: ModelDefinition = {

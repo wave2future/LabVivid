@@ -18,27 +18,32 @@ function compute(): ComputeResult {
 // Low-resolution escape-time render for the library-card thumbnail.
 function render(rc: RenderContext): void {
   const { ctx, width: w, height: h } = rc;
-  clear(ctx, w, h, '#05070f');
-  const cols = 90;
+  clear(ctx, w, h, '#070310');
+  const cols = Math.min(170, Math.max(80, Math.floor(w)));
   const cell = w / cols;
   const rows = Math.ceil(h / cell);
-  const maxIter = 60;
+  const maxIter = 110;
+  const cxMin = -2.35, cxMax = 0.85, cyMin = -1.25, cyMax = 1.25;
   for (let cyi = 0; cyi < rows; cyi++) {
     for (let cxi = 0; cxi < cols; cxi++) {
-      const cx = -2.2 + ((cxi + 0.5) / cols) * 3.0;            // real: [-2.2, 0.8]
-      const cy = -1.2 + ((cyi + 0.5) / rows) * 2.4;            // imag: [-1.2, 1.2]
+      const cx = cxMin + ((cxi + 0.5) / cols) * (cxMax - cxMin);
+      const cy = cyMin + ((cyi + 0.5) / rows) * (cyMax - cyMin);
       let zx = 0, zy = 0, n = 0;
-      while (n < maxIter && zx * zx + zy * zy < 4) {
+      while (n < maxIter && zx * zx + zy * zy < 256) {
         const xt = zx * zx - zy * zy + cx;
         zy = 2 * zx * zy + cy;
         zx = xt; n++;
       }
       if (n >= maxIter) {
-        ctx.fillStyle = '#000';
+        ctx.fillStyle = '#070310'; // inside the set
       } else {
-        const tnorm = n / maxIter;
-        const hue = 220 + tnorm * 140;
-        ctx.fillStyle = `hsl(${hue}, 80%, ${30 + tnorm * 45}%)`;
+        // smooth (continuous) escape value for banding-free colour
+        const mag = Math.sqrt(zx * zx + zy * zy);
+        const mu = (n + 1 - Math.log(Math.log(Math.max(mag, 1.0001))) / Math.LN2) / maxIter;
+        const t = Math.pow(Math.min(1, Math.max(0, mu)), 0.45);
+        const hue = (210 + t * 320) % 360;       // blue → magenta → orange
+        const light = 12 + t * 64;
+        ctx.fillStyle = `hsl(${hue}, 92%, ${light}%)`;
       }
       ctx.fillRect(cxi * cell, cyi * cell, cell + 1, cell + 1);
     }

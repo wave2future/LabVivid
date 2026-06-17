@@ -6,6 +6,21 @@ date.
 
 ---
 
+## 2026-06-17 — New library thumbnails for Black Hole & Mandelbrot
+
+**Prompt:** "Change Home page grid image of Black Hole and Mandelbrot Set"
+
+**Changes:**
+- Redesigned the Black Hole card thumbnail (`blackHole.ts` render): an
+  Interstellar-style lensed black hole — starfield, flat glowing accretion disk,
+  a gravitationally-lensed top arc, black event horizon, and a bright photon ring
+  (removed the old particle/label clutter).
+- Redesigned the Mandelbrot card thumbnail (`mandelbrot.ts` render): higher
+  resolution with smooth (continuous) escape colouring and a richer blue→magenta→
+  orange palette.
+
+---
+
 ## 2026-06-17 — Translate model text (FR/DE/KO/PT)
 
 **Prompt (/goal):** "Translate model-specific text for Français, Deutsch, 한국어,
