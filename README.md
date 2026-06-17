@@ -5,6 +5,8 @@ Students manipulate models, observe outcomes in real time, read the data and
 charts, and get grounded explanations. Built as the MVP described in
 [`docs/science-interactive-lab-prd.md`](docs/science-interactive-lab-prd.md).
 
+Inspired by PhET. Coded by Claude.
+
 ## Features (MVP)
 
 - **Model library** with subject filtering and keyword search, live preview
@@ -82,3 +84,33 @@ implemented, plus several nice-to-haves: screenshot export, classroom full-scree
 mode, PWA offline support, and bilingual UI. Out-of-scope items (accounts,
 grading, low-code editor, marketplace, payments) are intentionally deferred per
 PRD §8.3.
+
+## Screenshots
+
+![Home](./screenshots/Home.png)
+
+![Black Hole](./screenshots/BlackHole.png)
+
+![Doppler Effect](./screenshots/DopplerEffect.png)
+
+![Inclined Plane](./screenshots/InclinedPlane.png)
+
+![Mass on a Spring](./screenshots/MassSpring.png)
+
+![Solar System](./screenshots/SolarSystem.png)
+
+![Periodic Table](./screenshots/PeriodicTable.png)
+
+![Acid-Base Titration](./screenshots/Acid-BaseTitration.png)
+
+![Mandelbrot Set](./screenshots/MandelbrotSet.png)
+
+![Lorenz Attractor](./screenshots/LorenzAttractor.png)
+
+![Population Growth](./screenshots/PopulationGrowth.png)
+
+![Predator Prey](./screenshots/PredatorPrey.png)
+
+![Normal Distribution](./screenshots/NormalDistribution.png)
+
+![Fractions](./screenshots/Fractions.png)
