@@ -34,7 +34,8 @@ charts, and get grounded explanations. Built as the MVP described in
   local storage; restore or delete any saved run.
 - **Cross-platform** — responsive desktop/mobile layouts, touch-friendly
   controls, classroom (full-screen) mode, screenshot export, PWA offline
-  support, English / 中文 / 日本語 localization, and light/dark themes.
+  support, localization in 7 languages (English, 中文, 日本語, Français, Deutsch,
+  한국어, Português), and light/dark themes.
 
 ## Tech stack
 

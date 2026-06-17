@@ -6,6 +6,23 @@ date.
 
 ---
 
+## 2026-06-17 — Add French, German, Korean, Portuguese
+
+**Prompt:** "Add multilingual support: French, German, Korean, Portuguese"
+
+**Changes:**
+- Extended the i18n layer to 7 languages (added `fr`, `de`, `ko`, `pt` to `Lang`
+  and the language selector) and translated all UI chrome strings into the four
+  new languages (English remains the fallback).
+- Added the new languages to the embedded pages' overlay dictionaries (black
+  hole, mandelbrot, lorenz, wormhole); the periodic table already supports
+  fr/de/ko (pt falls back to English in that table).
+- Updated README.
+- Note: model-specific text (titles, descriptions, Learn content) currently
+  carries en/zh/ja and falls back to English for the four new languages.
+
+---
+
 ## 2026-06-17 — Black Hole overlay follows site language
 
 **Prompt:** "Black Hole model multilingual support: Drag to rotate Scroll to zoom"

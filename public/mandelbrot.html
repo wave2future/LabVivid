@@ -26,7 +26,7 @@
     <script type="module">
         import * as THREE from 'three';
         const LANG=new URLSearchParams(location.search).get('lang')||'en';
-        const I18N={en:{title:'Mandelbrot Set',hint:'🖥️ Scroll: zoom · Drag: move',zoom:'Zoom',iter:'Iterations'},zh:{title:'曼德博集合',hint:'🖥️ 滚轮：缩放 · 拖拽：移动',zoom:'缩放',iter:'迭代次数'},ja:{title:'マンデルブロ集合',hint:'🖥️ スクロール：拡大 · ドラッグ：移動',zoom:'ズーム',iter:'反復回数'}};
+        const I18N={en:{title:'Mandelbrot Set',hint:'🖥️ Scroll: zoom · Drag: move',zoom:'Zoom',iter:'Iterations'},zh:{title:'曼德博集合',hint:'🖥️ 滚轮：缩放 · 拖拽：移动',zoom:'缩放',iter:'迭代次数'},ja:{title:'マンデルブロ集合',hint:'🖥️ スクロール：拡大 · ドラッグ：移動',zoom:'ズーム',iter:'反復回数'},fr:{title:'Ensemble de Mandelbrot',hint:'🖥️ Molette : zoom · Glisser : déplacer',zoom:'Zoom',iter:'Itérations'},de:{title:'Mandelbrot-Menge',hint:'🖥️ Scrollen: Zoom · Ziehen: Bewegen',zoom:'Zoom',iter:'Iterationen'},ko:{title:'망델브로 집합',hint:'🖥️ 스크롤: 확대 · 드래그: 이동',zoom:'확대',iter:'반복'},pt:{title:'Conjunto de Mandelbrot',hint:'🖥️ Rolar: zoom · Arrastar: mover',zoom:'Zoom',iter:'Iterações'}};
         const L=I18N[LANG]||I18N.en;
         document.getElementById('ttl').innerText=L.title;
         document.getElementById('hint').innerText=L.hint;

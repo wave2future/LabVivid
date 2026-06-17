@@ -37,7 +37,7 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         const LANG=new URLSearchParams(location.search).get('lang')||'en';
-        const I18N={en:{title:'Lorenz Attractor',sub:'Chaos theory: sensitive dependence on initial conditions'},zh:{title:'洛伦兹吸引子',sub:'混沌理论：对初始条件的敏感依赖'},ja:{title:'ローレンツ・アトラクター',sub:'カオス理論：初期条件への鋭敏な依存'}};
+        const I18N={en:{title:'Lorenz Attractor',sub:'Chaos theory: sensitive dependence on initial conditions'},zh:{title:'洛伦兹吸引子',sub:'混沌理论：对初始条件的敏感依赖'},ja:{title:'ローレンツ・アトラクター',sub:'カオス理論：初期条件への鋭敏な依存'},fr:{title:'Attracteur de Lorenz',sub:'Théorie du chaos : sensibilité aux conditions initiales'},de:{title:'Lorenz-Attraktor',sub:'Chaostheorie: empfindliche Abhängigkeit von Anfangsbedingungen'},ko:{title:'로런츠 끌개',sub:'혼돈 이론: 초기 조건에 대한 민감성'},pt:{title:'Atrator de Lorenz',sub:'Teoria do caos: sensibilidade às condições iniciais'}};
         const L=I18N[LANG]||I18N.en;
         document.getElementById('ttl').innerText=L.title;
         document.getElementById('sub').innerText=L.sub;
