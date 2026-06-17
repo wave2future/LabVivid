@@ -6,6 +6,23 @@ date.
 
 ---
 
+## 2026-06-17 — Periodic Table: fit to area (no scroll) + follow site language
+
+**Prompts:** "Adjust Periodic Table size to avoid scroll bar … shrink elements to
+fit the width" / "Adjust periodic table multilingual with the outer whole site …
+change language according to the upper-right of the site."
+
+**Changes (public/periodic-table.html):**
+- Made the page a `100vh` flex column with `overflow:hidden`; the grid now fills
+  the remaining space with `repeat(18,1fr)` columns and `fr` rows, so all elements
+  fit the width and the whole table fits the height with no scrollbars. Tile
+  fonts scale with `clamp()`/vw; header/eyebrow/subtitle condensed.
+- The table now follows the site's language: it reads `?lang=` (the embed is
+  marked localized so it remounts on language change) and applies it through the
+  existing translations; its own language selector is hidden.
+
+---
+
 ## 2026-06-17 — Reorder: Black Hole first in Physics, Periodic Table first in Chemistry
 
 **Prompt:** "put Black Hole to the first of Physics, put Periodic Table to the

@@ -12,7 +12,7 @@ export const custom3D: Record<string, Custom3DView> = {
   'solar-system': lazy(() => import('./SolarSystem3D').then((m) => ({ default: m.SolarSystem3D }))),
   // Embedded self-contained pages.
   'black-hole': embedView('blackhole.html', 'Black Hole'),
-  'periodic-table': embedView('periodic-table.html', 'Periodic Table'),
+  'periodic-table': embedView('periodic-table.html', 'Periodic Table', true),
   'mandelbrot-set': embedView('mandelbrot.html', 'Mandelbrot Set', true),
   'lorenz-attractor': embedView('lorenz.html', 'Lorenz Attractor', true),
   'wormhole': embedView('wormhole.html', 'Wormhole', true),
